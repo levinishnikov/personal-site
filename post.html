@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daniel Levi</title>
+  <title>Daniel Levinishnikov</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -11,7 +11,7 @@
 
   <nav class="nav">
     <div class="nav-pill nav-pill-left">
-      <a href="/" class="nav-brand">Daniel Levi</a>
+      <a href="/" class="nav-brand">Daniel Levinishnikov</a>
       <span class="nav-sep"></span>
       <a href="/posts.html" class="nav-link active">Posts</a>
     </div>
@@ -83,7 +83,7 @@
           return r.json();
         })
         .then(post => {
-          document.title = `${post.title} — Daniel Levi`;
+          document.title = `${post.title} — Daniel Levinishnikov`;
 
           if (post.publish_date) {
             const [y, m, d] = post.publish_date.split('-').map(Number);
