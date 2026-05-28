@@ -809,6 +809,10 @@ main {
   gap: 16px;
 }
 
+.posts-page-list li:first-child {
+  border-top: none;
+}
+
 .posts-page-list li .year {
   min-width: 0;
   text-align: left;
