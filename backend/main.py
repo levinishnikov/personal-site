@@ -11,7 +11,16 @@ import database
 import schemas
 import sync
 
+from sqlalchemy import text
+
 models.Base.metadata.create_all(bind=database.engine)
+
+# Add new columns to existing tables if they don't exist yet
+with database.engine.connect() as conn:
+    conn.execute(text(
+        "ALTER TABLE posts ADD COLUMN IF NOT EXISTS publish_date DATE"
+    ))
+    conn.commit()
 
 app = FastAPI(title="Daniel Levi — Personal Site API")
 
