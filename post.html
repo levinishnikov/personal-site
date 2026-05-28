@@ -71,9 +71,12 @@
           }
 
           document.getElementById('post-title').textContent = post.title;
-          document.getElementById('post-body').innerHTML = post.body;
+
+          const body = document.getElementById('post-body');
+          body.innerHTML = post.body;
+          setTimeout(() => body.classList.add('visible'), 50);
+
           document.getElementById('post-header').style.animation = 'fadeUp 0.7s ease 0.05s both';
-          document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         })
         .catch(() => {
           document.getElementById('post-body').innerHTML = '<p>Post not found.</p>';
