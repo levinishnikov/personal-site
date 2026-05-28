@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Posts — Daniel Levi</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Daniel Levi
+    </a>
+  </nav>
+
+  <main class="post-main">
+    <article class="post">
+
+      <header class="post-header">
+        <h1 class="post-title">Posts</h1>
+      </header>
+
+      <div class="post-body glass reveal" id="posts-body">
+        <ol class="post-list" id="post-list">
+          <li class="post-list-loading">Loading…</li>
+        </ol>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="footer">
+    <span>daniellevi.com</span>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    document.addEventListener('mousemove', e => {
+      root.style.setProperty('--mx', e.clientX + 'px');
+      root.style.setProperty('--my', e.clientY + 'px');
+    });
+
+    fetch('/api/posts')
+      .then(r => r.json())
+      .then(posts => {
+        const list = document.getElementById('post-list');
+        if (!posts.length) {
+          list.innerHTML = '<li style="color:var(--muted);font-size:14px">No posts yet.</li>';
+          return;
+        }
+        posts.sort((a, b) => {
+          const da = a.publish_date ? new Date(a.publish_date) : new Date(a.year, 0);
+          const db = b.publish_date ? new Date(b.publish_date) : new Date(b.year, 0);
+          return db - da;
+        });
+        list.innerHTML = posts.map(p => {
+          let label;
+          if (p.publish_date) {
+            const [y, m] = p.publish_date.split('-').map(Number);
+            label = new Date(y, m - 1).toLocaleString('en', { month: 'long', year: 'numeric' });
+          } else {
+            label = p.year;
+          }
+          return `
+          <li>
+            <a href="/post.html?slug=${p.slug}">${p.title}</a>
+            <span class="year">${label}</span>
+          </li>`;
+        }).join('');
+        setTimeout(() => document.getElementById('posts-body').classList.add('visible'), 50);
+      })
+      .catch(() => {
+        document.getElementById('post-list').innerHTML =
+          '<li style="color:var(--muted);font-size:14px">Could not load posts.</li>';
+      });
+  </script>
+
+</body>
+</html>

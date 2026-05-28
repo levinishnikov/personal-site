@@ -80,7 +80,7 @@
     </section>
 
     <section class="section glass reveal" id="posts">
-      <h2>Posts</h2>
+      <h2><a href="/posts.html" class="section-link">Posts</a></h2>
       <ol class="post-list" id="post-list">
         <li class="post-list-loading">Loading…</li>
       </ol>
@@ -216,7 +216,8 @@
           const db = b.publish_date ? new Date(b.publish_date) : new Date(b.year, 0);
           return db - da;
         });
-        list.innerHTML = posts.map(p => {
+        const preview = posts.slice(0, 7);
+        list.innerHTML = preview.map(p => {
           let label;
           if (p.publish_date) {
             const [y, m] = p.publish_date.split('-').map(Number);
@@ -230,6 +231,10 @@
             <span class="year">${label}</span>
           </li>`;
         }).join('');
+        if (posts.length > 7) {
+          list.insertAdjacentHTML('afterend',
+            `<a href="/posts.html" class="all-posts-link">All ${posts.length} posts →</a>`);
+        }
       })
       .catch(() => {
         document.getElementById('post-list').innerHTML =

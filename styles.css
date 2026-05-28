@@ -470,6 +470,30 @@ main {
   padding: 8px 0 !important;
 }
 
+.section-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.section-link:hover {
+  color: var(--accent);
+}
+
+.all-posts-link {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: color 0.15s;
+}
+
+.all-posts-link:hover {
+  color: var(--accent);
+}
+
 .post-list a {
   font-size: 15px;
   color: var(--text);
