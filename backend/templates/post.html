@@ -25,13 +25,14 @@
         </a>
         <span class="post-date">[[ post.date_full ]]</span>
         <h1 class="post-title">[[ post.title ]]</h1>
-        <p class="post-byline">By <a href="/">Daniel Levinishnikov</a></p>
       </header>
 
       <div class="post-body glass">
         [[ body | safe ]]
         <div class="post-tg-inline"><hr><span>More takes — </span><a href="https://t.me/tldrdaniel" target="_blank" rel="noopener noreferrer">@tldrdaniel</a></div>
       </div>
+
+      <p class="post-byline">By <a href="/">Daniel Levinishnikov</a></p>
 
       [% if related %]
       <div class="post-footer glass reveal">

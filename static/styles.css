@@ -806,7 +806,8 @@ main {
 /* POST BYLINE */
 
 .post-byline {
-  margin-top: 16px;
+  margin: 20px 0 4px;
+  padding-left: 4px;
   font-size: 13px;
   color: var(--muted);
 }
