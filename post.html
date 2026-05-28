@@ -45,26 +45,9 @@
         <p class="post-loading">Loading…</p>
       </div>
 
-      <div class="post-footer" id="post-footer" style="display:none">
-
-        <a href="https://t.me/tldrdaniel" target="_blank" rel="noopener noreferrer" class="post-tg glass reveal">
-          <div class="post-tg-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-          </div>
-          <div class="post-tg-text">
-            <span class="post-tg-label">More thoughts, shorter format</span>
-            <span class="post-tg-handle">@tldrdaniel</span>
-          </div>
-          <svg class="post-tg-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-        </a>
-
-        <a href="#" class="post-next glass reveal" id="post-next" style="display:none">
-          <span class="post-next-label">Read next</span>
-          <span class="post-next-title" id="post-next-title"></span>
-          <span class="post-next-date" id="post-next-date"></span>
-          <svg class="post-next-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-
+      <div class="post-footer glass reveal" id="post-footer" style="display:none">
+        <p class="post-footer-label">More posts</p>
+        <ol class="post-list post-more-list" id="post-more-list"></ol>
       </div>
 
     </article>
@@ -113,12 +96,10 @@
           document.getElementById('post-title').textContent = post.title;
 
           const body = document.getElementById('post-body');
-          body.innerHTML = post.body;
+          body.innerHTML = post.body +
+            `<div class="post-tg-inline"><hr><span>More takes on AI — </span><a href="https://t.me/tldrdaniel" target="_blank" rel="noopener noreferrer">@tldrdaniel</a></div>`;
           setTimeout(() => body.classList.add('visible'), 50);
           document.getElementById('post-header').style.animation = 'fadeUp 0.7s ease 0.05s both';
-
-          document.getElementById('post-footer').style.display = '';
-          document.querySelectorAll('.post-footer .reveal').forEach(el => observer.observe(el));
 
           return fetch('/api/posts');
         })
@@ -128,18 +109,22 @@
           const others = posts.filter(p => p.slug !== slug);
           if (!others.length) return;
 
-          const next = others[Math.floor(Math.random() * others.length)];
-          const nextEl = document.getElementById('post-next');
-          const [y, m] = (next.publish_date || `${next.year}-01`).split('-').map(Number);
-          const dateLabel = next.publish_date
-            ? new Date(y, m - 1).toLocaleString('en', { month: 'short', year: 'numeric' })
-            : next.year;
+          const shuffled = others.sort(() => Math.random() - 0.5).slice(0, 3);
+          const list = document.getElementById('post-more-list');
+          list.innerHTML = shuffled.map(p => {
+            const label = p.publish_date
+              ? new Date(...p.publish_date.split('-').map((v, i) => i === 1 ? +v - 1 : +v))
+                  .toLocaleString('en', { month: 'short', year: 'numeric' })
+              : p.year;
+            return `<li>
+              <a href="/post.html?slug=${p.slug}">${p.title}</a>
+              <span class="year">${label}</span>
+            </li>`;
+          }).join('');
 
-          document.getElementById('post-next-title').textContent = next.title;
-          document.getElementById('post-next-date').textContent = dateLabel;
-          nextEl.href = `/post.html?slug=${next.slug}`;
-          nextEl.style.display = '';
-          observer.observe(nextEl);
+          const footer = document.getElementById('post-footer');
+          footer.style.display = '';
+          observer.observe(footer);
         })
         .catch(() => {
           document.getElementById('post-body').innerHTML = '<p>Post not found.</p>';
