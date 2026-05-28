@@ -59,7 +59,7 @@
           let label;
           if (p.publish_date) {
             const [y, m] = p.publish_date.split('-').map(Number);
-            label = new Date(y, m - 1).toLocaleString('en', { month: 'long', year: 'numeric' });
+            label = new Date(y, m - 1).toLocaleString('en', { month: 'short', year: 'numeric' });
           } else {
             label = p.year;
           }

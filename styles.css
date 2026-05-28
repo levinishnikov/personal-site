@@ -500,7 +500,11 @@ main {
   text-decoration: none;
   letter-spacing: -0.005em;
   transition: color 0.15s, transform 0.2s ease;
-  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
 .post-list li:hover a {
