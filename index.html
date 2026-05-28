@@ -211,12 +211,25 @@
           list.innerHTML = '<li style="color:var(--muted);font-size:14px">No posts yet.</li>';
           return;
         }
-        list.innerHTML = posts.map(p => `
+        posts.sort((a, b) => {
+          const da = a.publish_date ? new Date(a.publish_date) : new Date(a.year, 0);
+          const db = b.publish_date ? new Date(b.publish_date) : new Date(b.year, 0);
+          return db - da;
+        });
+        list.innerHTML = posts.map(p => {
+          let label;
+          if (p.publish_date) {
+            const [y, m] = p.publish_date.split('-').map(Number);
+            label = new Date(y, m - 1).toLocaleString('en', { month: 'long', year: 'numeric' });
+          } else {
+            label = p.year;
+          }
+          return `
           <li>
             <a href="/post.html?slug=${p.slug}">${p.title}</a>
-            <span class="year">${p.year}</span>
-          </li>
-        `).join('');
+            <span class="year">${label}</span>
+          </li>`;
+        }).join('');
       })
       .catch(() => {
         document.getElementById('post-list').innerHTML =
