@@ -3,5 +3,5 @@ uvicorn[standard]
 sqlalchemy
 psycopg2-binary
 python-dotenv
-notion-client
+notion-client==2.2.1
 apscheduler

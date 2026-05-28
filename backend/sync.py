@@ -89,13 +89,13 @@ def sync_notion_to_db() -> dict:
     db: Session = SessionLocal()
     synced = 0
     try:
-        response = notion.databases.query(
-            database_id=DATABASE_ID,
-            filter={"property": "Published", "checkbox": {"equals": True}}
-        )
+        response = notion.databases.query(database_id=DATABASE_ID)
         pages = response.get("results", [])
 
         for page in pages:
+            # Пропускаем если Published не отмечен
+            if not page["properties"].get("Published", {}).get("checkbox", False):
+                continue
             props = page["properties"]
 
             # Title — поддерживает "Name", "Title", "title"
