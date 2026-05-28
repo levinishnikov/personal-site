@@ -558,6 +558,19 @@ main {
   letter-spacing: -0.005em;
 }
 
+.role-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.2);
+  text-underline-offset: 3px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+.role-link:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
 /* ELSEWHERE */
 
 .contact-list {
