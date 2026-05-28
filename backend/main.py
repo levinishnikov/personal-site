@@ -101,8 +101,7 @@ def published_posts(db: Session):
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, db: Session = Depends(database.get_db)):
     posts = published_posts(db)
-    return templates.TemplateResponse("index.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "index.html", {
         "page_title": "Daniel Levinishnikov — Head of AI Products at T-Bank",
         "page_description": HOME_DESCRIPTION,
         "canonical_url": f"{seo.BASE}/",
@@ -117,8 +116,7 @@ def home(request: Request, db: Session = Depends(database.get_db)):
 @app.get("/posts.html", response_class=HTMLResponse)
 def posts_page(request: Request, db: Session = Depends(database.get_db)):
     posts = published_posts(db)
-    return templates.TemplateResponse("posts.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "posts.html", {
         "page_title": "Posts — Daniel Levinishnikov",
         "page_description": POSTS_DESCRIPTION,
         "canonical_url": f"{seo.BASE}/posts.html",
@@ -137,8 +135,7 @@ def post_page(slug: str, request: Request, db: Session = Depends(database.get_db
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     related = [seo.post_view(p) for p in posts if p.slug != slug][:3]
-    return templates.TemplateResponse("post.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "post.html", {
         "page_title": f"{post.title} — Daniel Levinishnikov",
         "page_description": seo.excerpt(post.body),
         "canonical_url": f"{seo.BASE}/posts/{post.slug}",
