@@ -216,11 +216,11 @@ body > * {
 }
 
 .nav-brand {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text);
   text-decoration: none;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   padding: 4px 6px 4px 2px;
   transition: opacity 0.15s;
 }
@@ -339,18 +339,27 @@ main {
 }
 
 .hero h1 {
-  font-size: clamp(36px, 6.5vw, 58px);
-  font-weight: 700;
-  line-height: 1.0;
-  letter-spacing: -0.04em;
-  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   margin-bottom: 12px;
-  white-space: nowrap;
+  animation: fadeUp 0.7s ease 0.1s both;
 }
 
-.hero h1 .word {
-  display: inline-block;
-  animation: fadeUp 0.7s ease 0.1s both;
+.name-first {
+  font-size: clamp(14px, 2vw, 20px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.name-last {
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.0;
+  color: var(--text);
 }
 
 .hero-sub {
