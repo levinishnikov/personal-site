@@ -303,8 +303,8 @@ main {
 }
 
 .avatar {
-  width: 128px;
-  height: 128px;
+  width: 148px;
+  height: 148px;
   border-radius: 50%;
   flex-shrink: 0;
   overflow: hidden;
@@ -344,22 +344,15 @@ main {
   gap: 0;
   margin-bottom: 12px;
   animation: fadeUp 0.7s ease 0.1s both;
-}
-
-.name-first {
-  font-size: clamp(14px, 2vw, 20px);
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  color: var(--muted);
-  line-height: 1.4;
-}
-
-.name-last {
   font-size: clamp(32px, 6vw, 52px);
   font-weight: 700;
   letter-spacing: -0.04em;
-  line-height: 1.0;
+  line-height: 1.05;
   color: var(--text);
+}
+
+.name-first, .name-last {
+  display: block;
 }
 
 .hero-sub {
