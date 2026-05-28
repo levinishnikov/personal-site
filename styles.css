@@ -891,6 +891,23 @@ main {
   animation: fadeUp 0.7s ease 0.05s both;
 }
 
+.post-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  margin-bottom: 24px;
+  transition: color 0.15s;
+}
+
+.post-back:hover {
+  color: var(--text);
+}
+
 .post-date {
   display: block;
   font-size: 12px;
@@ -908,6 +925,121 @@ main {
   letter-spacing: -0.03em;
   color: var(--text);
   margin: 0;
+}
+
+/* POST FOOTER */
+
+.post-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  padding-bottom: 64px;
+}
+
+.post-tg {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-tg:hover {
+  transform: translateY(-1px);
+}
+
+.post-tg-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 136, 204, 0.1);
+  color: #0088cc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.post-tg-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.post-tg-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.post-tg-handle {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.post-tg-arrow {
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.post-tg:hover .post-tg-arrow {
+  transform: translate(2px, -2px);
+}
+
+.post-next {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.post-next:hover {
+  transform: translateY(-1px);
+}
+
+.post-next-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.post-next-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.post-next-date {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.post-next-arrow {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.post-next:hover .post-next-arrow {
+  transform: translateX(3px);
 }
 
 .post-body {
