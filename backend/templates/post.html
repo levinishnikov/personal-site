@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+[% include "_head.html" %]
+</head>
+<body>
+
+[% include "_nav.html" %]
+
+  <main class="post-main">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="/posts.html">Posts</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">[[ post.title ]]</span>
+    </nav>
+
+    <article class="post">
+
+      <header class="post-header">
+        <a href="/posts.html" class="post-back">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          All posts
+        </a>
+        <span class="post-date">[[ post.date_full ]]</span>
+        <h1 class="post-title">[[ post.title ]]</h1>
+        <p class="post-byline">By <a href="/">Daniel Levinishnikov</a></p>
+      </header>
+
+      <div class="post-body glass">
+        [[ body | safe ]]
+        <div class="post-tg-inline"><hr><span>More takes — </span><a href="https://t.me/tldrdaniel" target="_blank" rel="noopener noreferrer">@tldrdaniel</a></div>
+      </div>
+
+      [% if related %]
+      <div class="post-footer glass reveal">
+        <p class="post-footer-label">More posts</p>
+        <ol class="post-list post-more-list">
+          [% for r in related %]
+          <li>
+            <a href="/posts/[[ r.slug ]]">[[ r.title ]]</a>
+            <span class="year">[[ r.date_label ]]</span>
+          </li>
+          [% endfor %]
+        </ol>
+      </div>
+      [% endif %]
+
+    </article>
+  </main>
+
+[% include "_footer.html" %]
+[% include "_scripts.html" %]
+
+</body>
+</html>

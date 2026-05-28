@@ -1,0 +1,6 @@
+# Daniel Levinishnikov
+> Head of AI Products at T-Bank. Builds LLM agents, chatbots and voice systems for customer support automation.
+
+## Pages
+- [Home](https://llmceo.com/)
+- [Posts](https://llmceo.com/posts.html)

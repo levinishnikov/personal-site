@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+[% include "_head.html" %]
+</head>
+<body>
+
+[% include "_nav.html" %]
+
+  <main>
+
+    <section class="hero">
+      <div class="hero-body">
+        <div class="avatar">
+          <img src="/daniel-levinishnikov.jpg" alt="Daniel Levinishnikov" width="148" height="148" />
+        </div>
+        <div class="hero-text">
+          <h1><span class="name-first">Daniel</span><span class="name-last">Levinishnikov</span></h1>
+          <p class="hero-sub">I lead <span class="counter" data-target="250">250</span> AI people at T-Bank and pretend I know more than they do, after years of the same at Alibaba.</p>
+          <a class="hero-cta" href="https://t.me/llm_ceo1" target="_blank" rel="noopener noreferrer">
+            <span>Let's shape the future of AI together!</span>
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 10L10 1M10 1H3M10 1V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section glass reveal" id="about">
+      <h2>About</h2>
+      <div class="prose">
+        <p>Started as a Machine Learning Engineer, ended up leading people the classic "how did I get here." Spent a few years at a rapidly growing e-commerce startup figuring out how to price deliveries and forecast demand, then moved to Alibaba to make it actually work and obviously fix checkout bugs.</p>
+        <p>Now I run AI products at T-Bank with a team of 250 AI-people: chatbots, voice bots, predictive systems, and whatever else needs to make 10 times user experience and billions of profit. The thread through my entire career: making AI do something useful, not just impressive. So basically the opposite of what AI does on LinkedIn.</p>
+      </div>
+    </section>
+
+    <section class="section glass reveal" id="path">
+      <h2>Path</h2>
+      <ol class="path-list">
+        <li>
+          <span class="period">2024 – Present</span>
+          <span class="role">Head of AI Products, <a href="https://en.wikipedia.org/wiki/T-Bank" target="_blank" rel="noopener noreferrer" class="role-link">T-Bank</a></span>
+        </li>
+        <li>
+          <span class="period">2023 – 2024</span>
+          <span class="role">Product Director, <a href="https://en.wikipedia.org/wiki/Alibaba_Group" target="_blank" rel="noopener noreferrer" class="role-link">Alibaba Group</a></span>
+        </li>
+        <li>
+          <span class="period">2021 – 2023</span>
+          <span class="role">Product Lead, <a href="https://ru.wikipedia.org/wiki/%D0%9A%D1%83%D0%BF%D0%B5%D1%80_(%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD-%D1%80%D0%B8%D1%82%D0%B5%D0%B9%D0%BB%D0%B5%D1%80)" target="_blank" rel="noopener noreferrer" class="role-link">Kuper</a></span>
+        </li>
+        <li>
+          <span class="period">2018 – 2020</span>
+          <span class="role">Business Analyst, <a href="https://en.wikipedia.org/wiki/Accenture" target="_blank" rel="noopener noreferrer" class="role-link">Accenture</a></span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section glass reveal" id="posts">
+      <h2><a href="/posts.html" class="section-link">Posts</a></h2>
+      <ol class="post-list" id="post-list">
+        [% for p in recent_posts %]
+        <li>
+          <a href="/posts/[[ p.slug ]]">[[ p.title ]]</a>
+          <span class="year">[[ p.date_label ]]</span>
+        </li>
+        [% endfor %]
+      </ol>
+      [% if total_posts > recent_posts|length %]
+      <a href="/posts.html" class="all-posts-link">All [[ total_posts ]] posts →</a>
+      [% endif %]
+    </section>
+
+    <section class="section glass reveal" id="elsewhere">
+      <h2>Elsewhere</h2>
+      <ul class="contact-list">
+        <li>
+          <span class="platform">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            Telegram
+          </span>
+          <a href="https://t.me/llm_ceo1" target="_blank" rel="noopener noreferrer">@llm_ceo1 ↗</a>
+        </li>
+        <li>
+          <span class="platform">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </span>
+          <a href="https://www.linkedin.com/in/levi71" target="_blank" rel="noopener noreferrer">levi71 ↗</a>
+        </li>
+        <li>
+          <span class="platform">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            GitHub
+          </span>
+          <a href="https://github.com/levinishnikov" target="_blank" rel="noopener noreferrer">levinishnikov ↗</a>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+[% include "_footer.html" %]
+[% include "_scripts.html" %]
+
+</body>
+</html>

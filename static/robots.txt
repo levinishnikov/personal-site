@@ -1,0 +1,19 @@
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Applebot
+User-agent: YandexBot
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+Allow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://llmceo.com/sitemap.xml

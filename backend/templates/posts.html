@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+[% include "_head.html" %]
+</head>
+<body>
+
+[% include "_nav.html" %]
+
+  <main class="post-main">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Posts</span>
+    </nav>
+
+    <div class="posts-page-header reveal">
+      <div class="posts-page-top">
+        <h1 class="posts-page-title">My Posts.</h1>
+        <span class="posts-page-count">[[ total_posts ]]</span>
+      </div>
+      <p class="posts-page-subtitle">Teaching AI to be useful, against its will.</p>
+    </div>
+
+    <section class="section glass reveal">
+      <ol class="post-list posts-page-list">
+        [% for p in posts %]
+        <li>
+          <span class="year">[[ p.date_label ]]</span>
+          <a href="/posts/[[ p.slug ]]">[[ p.title ]]</a>
+        </li>
+        [% endfor %]
+      </ol>
+    </section>
+  </main>
+
+[% include "_footer.html" %]
+[% include "_scripts.html" %]
+
+</body>
+</html>

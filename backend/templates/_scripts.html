@@ -1,0 +1,48 @@
+  <script>
+    const root = document.documentElement;
+    document.addEventListener('mousemove', e => {
+      root.style.setProperty('--mx', e.clientX + 'px');
+      root.style.setProperty('--my', e.clientY + 'px');
+    });
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.filter(e => e.isIntersecting).forEach(entry => {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    document.querySelectorAll('.glass').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        if (!card.classList.contains('visible')) return;
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform =
+          `perspective(900px) rotateX(${-y * 3}deg) rotateY(${x * 3}deg) translateZ(4px)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    });
+
+    function animateCounter(el) {
+      const target = +el.dataset.target;
+      const duration = 1400;
+      const start = performance.now();
+      const tick = now => {
+        const t = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(ease * target).toLocaleString();
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+  </script>
