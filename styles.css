@@ -136,36 +136,88 @@ body > * {
 
 .nav {
   position: fixed;
-  top: 0;
-  right: 0;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 100;
-  padding: 22px 40px;
-}
-
-.nav-social {
-  list-style: none;
-  display: flex;
-  gap: 28px;
-}
-
-.nav-social a {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
+  padding: 6px 6px 6px 16px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+}
+
+.nav-brand {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  margin-right: 4px;
+  transition: opacity 0.15s;
+}
+
+.nav-brand:hover {
+  opacity: 0.7;
+}
+
+.nav-sep {
+  width: 1px;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+
+.nav-link {
   font-size: 13px;
+  font-weight: 400;
   color: var(--muted);
   text-decoration: none;
-  letter-spacing: 0.01em;
-  transition: color 0.2s;
+  padding: 5px 10px;
+  border-radius: 20px;
+  transition: color 0.15s, background 0.15s;
 }
 
-.nav-social a:hover {
+.nav-link:hover {
   color: var(--text);
+  background: rgba(0, 0, 0, 0.05);
 }
 
-.nav-social svg {
+.nav-link.active {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 2px;
+}
+
+.nav-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--muted);
+  border-radius: 50%;
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
   flex-shrink: 0;
-  opacity: 0.7;
+}
+
+.nav-icons a:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 /* LAYOUT */
@@ -179,7 +231,7 @@ main {
 /* HERO */
 
 .hero {
-  padding: 88px 0 64px;
+  padding: 100px 0 64px;
 }
 
 .hero-body {
@@ -705,28 +757,6 @@ main {
 
 /* POST PAGES */
 
-.nav-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.nav-back:hover {
-  color: var(--text);
-}
-
-.nav-back svg {
-  transition: transform 0.2s ease;
-}
-
-.nav-back:hover svg {
-  transform: translateX(-2px);
-}
 
 .post-main {
   max-width: 640px;
