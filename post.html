@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daniel Levi</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Daniel Levi
+    </a>
+  </nav>
+
+  <main class="post-main">
+    <article class="post">
+
+      <header class="post-header" id="post-header">
+        <span class="post-date" id="post-date"></span>
+        <h1 class="post-title" id="post-title"></h1>
+      </header>
+
+      <div class="post-body glass reveal" id="post-body">
+        <p class="post-loading">Loading…</p>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="footer">
+    <span>daniellevi.com</span>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    document.addEventListener('mousemove', e => {
+      root.style.setProperty('--mx', e.clientX + 'px');
+      root.style.setProperty('--my', e.clientY + 'px');
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.filter(e => e.isIntersecting).forEach(entry => {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
+
+    const slug = new URLSearchParams(window.location.search).get('slug');
+
+    if (!slug) {
+      window.location.href = '/';
+    } else {
+      fetch(`/api/posts/${slug}`)
+        .then(r => {
+          if (!r.ok) throw new Error('Not found');
+          return r.json();
+        })
+        .then(post => {
+          document.title = `${post.title} — Daniel Levi`;
+          document.getElementById('post-date').textContent = post.year;
+          document.getElementById('post-title').textContent = post.title;
+          document.getElementById('post-body').innerHTML = post.body;
+          document.getElementById('post-header').style.animation = 'fadeUp 0.7s ease 0.05s both';
+          document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        })
+        .catch(() => {
+          document.getElementById('post-body').innerHTML = '<p>Post not found.</p>';
+          document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+    }
+  </script>
+
+</body>
+</html>
