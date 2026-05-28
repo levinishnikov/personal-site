@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy import Column, Integer, String, Text, DateTime, Date
 from datetime import datetime, timezone
 from database import Base
 
@@ -11,4 +11,5 @@ class Post(Base):
     title = Column(String, nullable=False)
     body = Column(Text, nullable=False, default="")
     year = Column(Integer, nullable=False)
+    publish_date = Column(Date, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

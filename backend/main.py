@@ -1,12 +1,15 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from apscheduler.schedulers.background import BackgroundScheduler
 from pathlib import Path
 from typing import List
+import os
 import models
 import database
 import schemas
+import sync
 
 models.Base.metadata.create_all(bind=database.engine)
 
@@ -19,6 +22,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Weekly sync scheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(sync.sync_notion_to_db, "interval", weeks=1, id="notion_sync")
+scheduler.start()
+
+
+@app.on_event("shutdown")
+def shutdown_scheduler():
+    scheduler.shutdown()
+
+
+# ── Posts ──────────────────────────────────────────────────────────────────
 
 @app.get("/api/posts", response_model=List[schemas.Post])
 def list_posts(db: Session = Depends(database.get_db)):
@@ -63,6 +78,20 @@ def delete_post(slug: str, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="Post not found")
     db.delete(db_post)
     db.commit()
+
+
+# ── Sync ───────────────────────────────────────────────────────────────────
+
+@app.post("/api/sync")
+def trigger_sync(x_sync_secret: str = Header(default="")):
+    secret = os.getenv("SYNC_SECRET", "")
+    if secret and x_sync_secret != secret:
+        raise HTTPException(status_code=401, detail="Invalid sync secret")
+    try:
+        result = sync.sync_notion_to_db()
+        return result
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Static files — must be mounted last so API routes take priority
