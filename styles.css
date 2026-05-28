@@ -137,20 +137,82 @@ body > * {
 .nav {
   position: fixed;
   top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 20px;
+  right: 20px;
   z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.nav-pill {
+  pointer-events: all;
   display: flex;
   align-items: center;
   gap: 2px;
-  padding: 6px 6px 6px 16px;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 50px;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.80);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.50) inset,
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
   white-space: nowrap;
+}
+
+.nav-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.50) 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nav-pill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.30) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  background-position: -100% 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: background-position 0.55s ease;
+}
+
+.nav-pill:hover::after {
+  background-position: 200% 0;
+}
+
+.nav-pill > * {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-pill-left {
+  padding: 6px 8px 6px 14px;
+}
+
+.nav-pill-right {
+  padding: 4px 6px;
 }
 
 .nav-brand {
@@ -159,19 +221,19 @@ body > * {
   color: var(--text);
   text-decoration: none;
   letter-spacing: -0.01em;
-  margin-right: 4px;
+  padding: 4px 6px 4px 2px;
   transition: opacity 0.15s;
 }
 
 .nav-brand:hover {
-  opacity: 0.7;
+  opacity: 0.65;
 }
 
 .nav-sep {
   width: 1px;
-  height: 16px;
-  background: rgba(0, 0, 0, 0.1);
-  margin: 0 6px;
+  height: 14px;
+  background: rgba(0, 0, 0, 0.12);
+  margin: 0 4px;
   flex-shrink: 0;
 }
 
@@ -198,8 +260,7 @@ body > * {
 .nav-icons {
   display: flex;
   align-items: center;
-  gap: 2px;
-  margin-left: 2px;
+  gap: 0;
 }
 
 .nav-icons a {
