@@ -5,13 +5,14 @@ from sqlalchemy.orm import Session
 from apscheduler.schedulers.background import BackgroundScheduler
 from pathlib import Path
 from typing import List
+from datetime import date
 import os
 import models
 import database
 import schemas
 import sync
 
-from sqlalchemy import text
+from sqlalchemy import text, or_
 
 models.Base.metadata.create_all(bind=database.engine)
 
@@ -44,14 +45,23 @@ def shutdown_scheduler():
 
 # ── Posts ──────────────────────────────────────────────────────────────────
 
+def published_filter():
+    return or_(models.Post.publish_date == None, models.Post.publish_date <= date.today())
+
+
 @app.get("/api/posts", response_model=List[schemas.Post])
 def list_posts(db: Session = Depends(database.get_db)):
-    return db.query(models.Post).order_by(models.Post.year.desc()).all()
+    return (db.query(models.Post)
+              .filter(published_filter())
+              .order_by(models.Post.year.desc())
+              .all())
 
 
 @app.get("/api/posts/{slug}", response_model=schemas.Post)
 def get_post(slug: str, db: Session = Depends(database.get_db)):
-    post = db.query(models.Post).filter(models.Post.slug == slug).first()
+    post = (db.query(models.Post)
+              .filter(models.Post.slug == slug, published_filter())
+              .first())
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     return post
