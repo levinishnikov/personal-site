@@ -50,7 +50,9 @@ def blocks_to_html(blocks: list) -> str:
             inner = rich_text_to_html(rich)
             if inner:
                 html += f"<p>{inner}</p>\n"
-        elif btype in ("heading_1", "heading_2"):
+        elif btype == "heading_1":
+            html += f"<h2>{rich_text_to_html(rich)}</h2>\n"
+        elif btype == "heading_2":
             html += f"<h2>{rich_text_to_html(rich)}</h2>\n"
         elif btype == "heading_3":
             html += f"<h3>{rich_text_to_html(rich)}</h3>\n"
@@ -68,15 +70,32 @@ def blocks_to_html(blocks: list) -> str:
                 r = blocks[i]["numbered_list_item"].get("rich_text", [])
                 items.append(f"<li>{rich_text_to_html(r)}</li>")
                 i += 1
-            html += f"<ol>{''.join(items)}</ol>\n"
+            html += f"<ol>{''.join(items)}</ul>\n"
             continue
         elif btype == "code":
             code = "".join(s.get("plain_text", "") for s in rich)
-            html += f"<pre><code>{code}</code></pre>\n"
+            lang = content.get("language", "")
+            html += f'<pre><code class="language-{lang}">{code}</code></pre>\n'
         elif btype == "quote":
             html += f"<blockquote>{rich_text_to_html(rich)}</blockquote>\n"
+        elif btype == "callout":
+            icon = content.get("icon", {}).get("emoji", "")
+            html += f"<blockquote>{icon} {rich_text_to_html(rich)}</blockquote>\n"
+        elif btype == "toggle":
+            inner = rich_text_to_html(rich)
+            html += f"<p><strong>{inner}</strong></p>\n"
         elif btype == "divider":
             html += "<hr>\n"
+        elif btype == "image":
+            url = (content.get("file") or content.get("external") or {}).get("url", "")
+            caption = rich_text_to_html(content.get("caption", []))
+            if url:
+                html += f'<img src="{url}" alt="{caption}" style="max-width:100%;border-radius:8px;">\n'
+        else:
+            # Универсальный fallback — вытаскиваем plain_text из любого блока
+            plain = "".join(s.get("plain_text", "") for s in rich)
+            if plain:
+                html += f"<p>{plain}</p>\n"
 
         i += 1
     return html
