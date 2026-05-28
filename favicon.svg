@@ -1,12 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#111"/>
-  <!-- head wrap top -->
-  <rect x="4" y="5" width="24" height="8" rx="3" fill="#222"/>
-  <!-- eye slit -->
-  <rect x="4" y="13" width="24" height="6" rx="1" fill="white"/>
+  <rect width="32" height="32" rx="8" fill="#eef2f7"/>
+  <!-- headband tails -->
+  <path d="M22 11 L31 8 L31 12 L23 13.5 Z" fill="#d6224e"/>
+  <path d="M22 13 L31 15 L30 18.5 L23 15 Z" fill="#b81b42"/>
+  <!-- hood / head -->
+  <circle cx="16" cy="16" r="11" fill="#2b2b40"/>
+  <!-- headband -->
+  <rect x="6.5" y="10.8" width="19" height="3.6" rx="1.6" fill="#e0245e"/>
   <!-- eyes -->
-  <rect x="8" y="15" width="4" height="2" rx="1" fill="#111"/>
-  <rect x="20" y="15" width="4" height="2" rx="1" fill="#111"/>
-  <!-- mask bottom -->
-  <rect x="4" y="19" width="24" height="8" rx="3" fill="#222"/>
+  <ellipse cx="12" cy="18.6" rx="2.6" ry="3.1" fill="#fff"/>
+  <ellipse cx="20" cy="18.6" rx="2.6" ry="3.1" fill="#fff"/>
+  <circle cx="12.5" cy="19.1" r="1.2" fill="#1a1a2e"/>
+  <circle cx="20.5" cy="19.1" r="1.2" fill="#1a1a2e"/>
 </svg>
