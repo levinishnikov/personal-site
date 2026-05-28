@@ -60,7 +60,16 @@
         })
         .then(post => {
           document.title = `${post.title} — Daniel Levi`;
-          document.getElementById('post-date').textContent = post.year;
+
+          if (post.publish_date) {
+            const [y, m, d] = post.publish_date.split('-').map(Number);
+            const label = new Date(y, m - 1, d)
+              .toLocaleString('en', { month: 'long', year: 'numeric' });
+            document.getElementById('post-date').textContent = label;
+          } else {
+            document.getElementById('post-date').textContent = post.year;
+          }
+
           document.getElementById('post-title').textContent = post.title;
           document.getElementById('post-body').innerHTML = post.body;
           document.getElementById('post-header').style.animation = 'fadeUp 0.7s ease 0.05s both';
