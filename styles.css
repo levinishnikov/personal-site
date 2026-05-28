@@ -725,6 +725,26 @@ main {
   padding-bottom: 64px;
 }
 
+.posts-page-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 64px 0 24px;
+}
+
+.posts-page-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.posts-page-count {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
 .post-header {
   padding: 64px 0 40px;
   animation: fadeUp 0.7s ease 0.05s both;

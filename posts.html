@@ -16,19 +16,16 @@
   </nav>
 
   <main class="post-main">
-    <article class="post">
+    <div class="posts-page-header reveal">
+      <h1 class="posts-page-title">Posts</h1>
+      <span class="posts-page-count" id="posts-count"></span>
+    </div>
 
-      <header class="post-header">
-        <h1 class="post-title">Posts</h1>
-      </header>
-
-      <div class="post-body glass reveal" id="posts-body">
-        <ol class="post-list" id="post-list">
-          <li class="post-list-loading">Loading…</li>
-        </ol>
-      </div>
-
-    </article>
+    <section class="section glass reveal">
+      <ol class="post-list" id="post-list">
+        <li class="post-list-loading">Loading…</li>
+      </ol>
+    </section>
   </main>
 
   <footer class="footer">
@@ -42,19 +39,34 @@
       root.style.setProperty('--my', e.clientY + 'px');
     });
 
+    const observer = new IntersectionObserver(entries => {
+      entries.filter(e => e.isIntersecting).forEach(entry => {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
     fetch('/api/posts')
       .then(r => r.json())
       .then(posts => {
         const list = document.getElementById('post-list');
+        const countEl = document.getElementById('posts-count');
+
         if (!posts.length) {
           list.innerHTML = '<li style="color:var(--muted);font-size:14px">No posts yet.</li>';
           return;
         }
+
         posts.sort((a, b) => {
           const da = a.publish_date ? new Date(a.publish_date) : new Date(a.year, 0);
           const db = b.publish_date ? new Date(b.publish_date) : new Date(b.year, 0);
           return db - da;
         });
+
+        countEl.textContent = posts.length;
+
         list.innerHTML = posts.map(p => {
           let label;
           if (p.publish_date) {
@@ -69,7 +81,6 @@
             <span class="year">${label}</span>
           </li>`;
         }).join('');
-        setTimeout(() => document.getElementById('posts-body').classList.add('visible'), 50);
       })
       .catch(() => {
         document.getElementById('post-list').innerHTML =
