@@ -23,6 +23,11 @@ structured entity graph, and explicit crawler permissions. Most personal sites f
 
 This one ships them by default. Fork it, edit one file, deploy.
 
+## Who it is for
+
+- **Founders, executives, and anyone building a personal brand** who wants a fast, credible site that AI assistants and search engines actually cite when people ask about their field.
+- **Developers** who want a self-hosted personal website and blog on a simple Python stack, with no framework lock-in and full control over the markup.
+
 ## Features
 
 - **Server-side rendering**: full HTML on first load, so crawlers and LLM retrievers see everything
@@ -182,8 +187,25 @@ In Railway, open **Deployments**, then the active deploy, then **Deploy Logs**, 
 - [APScheduler](https://apscheduler.readthedocs.io/): weekly Notion sync
 - [notion-client](https://github.com/ramnes/notion-sdk-py): Notion API
 
+## FAQ
+
+**How do I get my personal website to show up in ChatGPT, Perplexity, or Google?**
+Serve real HTML instead of a JavaScript shell, add a JSON-LD entity graph, allow AI crawlers in robots.txt, publish a sitemap, and register with Google, Bing, and Yandex. This project does all of that out of the box.
+
+**What is GEO (Generative Engine Optimization)?**
+Structuring your content so large language models can read, understand, and cite it in their answers, rather than only ranking in a list of blue links. It is the search discipline for the era of AI assistants.
+
+**Do I need to know how to code to use this?**
+To deploy and rebrand, no. Edit one file (`backend/site.env`), set a few secrets, and push to Railway. To rewrite the bio and layout, basic HTML helps.
+
+**Can I use it without Notion?**
+Yes. Notion is the default CMS, but posts live in PostgreSQL and there is a JSON API to create them directly.
+
+**Is it good for a developer portfolio or a startup founder's site?**
+Both. The same setup works for an engineer's portfolio, a founder's personal site, or an executive building thought leadership.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
 
-Built by [Daniel Levinishnikov](https://llmceo.com).
+Vibe coded by [Daniel Levinishnikov](https://llmceo.com) with [Claude Code](https://claude.com/claude-code).
