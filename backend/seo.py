@@ -102,6 +102,7 @@ def _person_node() -> dict:
         ],
         "description": FACTUAL_DESCRIPTION,
         "sameAs": [
+            "https://www.wikidata.org/wiki/Q139973632",
             "https://t.me/llm_ceo1",
             "https://www.linkedin.com/in/levinishnikov",
             "https://github.com/levinishnikov",
