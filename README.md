@@ -2,16 +2,16 @@
 
 # personal-site
 
-### A fast personal website + blog, built to be read by LLMs as much as by people.
+### A fast personal website and blog, built to be read by LLMs as much as by people.
 
-Server-rendered FastAPI · Notion as CMS · JSON-LD entity graph · deploys to Railway in minutes.
+Server-rendered FastAPI, Notion as CMS, JSON-LD entity graph, deploys to Railway in minutes.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776ab.svg?logo=python&logoColor=white)](https://www.python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Deploy on Railway](https://img.shields.io/badge/Deploy-Railway-9d4edd.svg?logo=railway&logoColor=white)](https://railway.app)
 
-**[Live demo → llmceo.com](https://llmceo.com)**
+**[Live demo: llmceo.com](https://llmceo.com)**
 
 </div>
 
@@ -23,24 +23,24 @@ Search is shifting from "ten blue links" to direct answers from ChatGPT, Perplex
 To show up in those answers your content has to be *machine-readable*: server-rendered HTML, a
 structured entity graph, and explicit crawler permissions. Most personal sites fail all three.
 
-This one ships them by default — fork it, edit one file, deploy.
+This one ships them by default. Fork it, edit one file, deploy.
 
 ## Features
 
-- 🔎 **Server-side rendering** — full HTML on first load; crawlers and LLM retrievers see everything
-- 📝 **Notion as CMS** — write posts in Notion, they sync automatically (weekly or on demand)
-- 🧠 **JSON-LD entity graph** — Person + WebSite + Article schema on every page
-- 🤖 **Bot-friendly** — explicit AI-crawler allowlist in robots.txt, llms.txt, dynamic sitemap
-- 🪟 **Liquid glass UI** — Apple-style design with backdrop-filter and specular highlights
-- 📊 **Bot logging** — every crawler visit shows up in deploy logs with a `[BOT]` prefix
-- 📡 **RSS feed** — `/feed.xml` out of the box
-- ⚡ **Zero-JS content** — critical text never depends on JavaScript
+- **Server-side rendering**: full HTML on first load, so crawlers and LLM retrievers see everything
+- **Notion as CMS**: write posts in Notion, they sync automatically (weekly or on demand)
+- **JSON-LD entity graph**: Person, WebSite, and Article schema on every page
+- **Bot-friendly**: explicit AI-crawler allowlist in robots.txt, llms.txt, dynamic sitemap
+- **Liquid glass UI**: Apple-style design with backdrop-filter and specular highlights
+- **Bot logging**: every crawler visit shows up in deploy logs with a `[BOT]` prefix
+- **RSS feed**: `/feed.xml` out of the box
+- **Zero-JS content**: critical text never depends on JavaScript
 
 ---
 
 ## Quick start
 
-### 1. Fork & clone
+### 1. Fork and clone
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/personal-site
@@ -55,7 +55,7 @@ Your **public identity** (name, title, links, descriptions) lives in one committ
 backend/site.env
 ```
 
-Edit it — that's the only file you need to touch to rebrand the whole site.
+Edit it. That is the only file you need to touch to rebrand the whole site.
 
 Your **secrets** (database URL, Notion token, sync secret) go in `backend/.env` for
 local dev, or in Railway variables for production. Never commit them:
@@ -64,7 +64,8 @@ local dev, or in Railway variables for production. Never commit them:
 cp .env.example backend/.env   # then fill in your secrets
 ```
 
-Precedence: real environment variables (Railway) > `backend/.env` > `backend/site.env` > defaults.
+Precedence: real environment variables (Railway) beat `backend/.env`, which beats
+`backend/site.env`, which beats the defaults in code.
 
 ### 3. Run locally
 
@@ -78,12 +79,12 @@ Open [http://localhost:8000](http://localhost:8000).
 
 ### 4. Customise content
 
-The env vars cover your name, links, and job title.  
-For the bio, career path, and other page copy — edit the templates directly:
+The values in `site.env` cover your name, links, and job title.
+For the bio, career path, and other page copy, edit the templates directly:
 
 | What | File |
 |---|---|
-| Homepage bio & career | `backend/templates/index.html` |
+| Homepage bio and career | `backend/templates/index.html` |
 | Avatar photo | Replace `static/avatar.jpg` |
 | Favicon | Replace `static/favicon.svg` |
 | Styles | `static/styles.css` |
@@ -91,30 +92,26 @@ For the bio, career path, and other page copy — edit the templates directly:
 ### 5. Deploy to Railway
 
 1. Push your fork to GitHub
-2. Create a new Railway project → **Deploy from GitHub repo**
+2. Create a new Railway project and choose **Deploy from GitHub repo**
 3. Add a **PostgreSQL** service to the project
-4. Set all env vars from `.env.example` in Railway → Variables
+4. Set your secrets (from `.env.example`) in Railway under Variables
 5. Railway auto-deploys on every push
 
 ---
 
-## Environment variables
+## Configuration reference
 
-### Required
+Public identity lives in `backend/site.env`. Secrets live in Railway or `backend/.env`.
+
+### Identity (in `site.env`)
 
 | Variable | Example |
 |---|---|
-| `DATABASE_URL` | `postgresql://user:pass@host/db` |
 | `SITE_DOMAIN` | `https://yoursite.com` |
 | `OWNER_NAME` | `Jane Smith` |
 | `OWNER_NAME_FIRST` | `Jane` |
 | `OWNER_NAME_LAST` | `Smith` |
 | `OWNER_TITLE` | `Head of Product` |
-
-### Optional but recommended
-
-| Variable | Description |
-|---|---|
 | `OWNER_EMPLOYER` | Your company name |
 | `OWNER_EMPLOYER_URL` | Company website URL |
 | `OWNER_DESCRIPTION` | One-sentence bio (used in JSON-LD) |
@@ -123,19 +120,21 @@ For the bio, career path, and other page copy — edit the templates directly:
 | `OWNER_GITHUB` | GitHub username |
 | `OWNER_WIKIDATA` | Wikidata Q-id, e.g. `Q12345678` |
 | `OWNER_KNOWS_ABOUT` | Comma-separated expertise list |
+| `TAKES_TELEGRAM` | Optional second handle promoted under each post |
 | `AVATAR_FILE` | Filename in `static/` (default: `avatar.jpg`) |
 | `HERO_CTA_URL` | Hero section CTA button URL |
 | `HERO_CTA_TEXT` | Hero section CTA button label |
 | `HOME_DESCRIPTION` | Homepage meta description |
 | `POSTS_DESCRIPTION` | Posts page meta description |
 
-### Notion sync
+### Secrets (in Railway or `.env`)
 
 | Variable | Description |
 |---|---|
+| `DATABASE_URL` | PostgreSQL connection string (Railway provides this) |
 | `NOTION_TOKEN` | Notion integration token |
 | `NOTION_DATABASE_ID` | ID of the Notion database with posts |
-| `SYNC_SECRET` | Secret for `POST /api/sync` webhook (optional) |
+| `SYNC_SECRET` | Secret for the `POST /api/sync` webhook (optional) |
 
 ---
 
@@ -148,20 +147,20 @@ Your Notion database needs these properties:
 | `Name` | Title | Post title |
 | `Slug` | Text | URL path, e.g. `my-first-post` |
 | `Year` | Number | Publication year |
-| `Publish Date` | Date | Leave empty = published immediately |
+| `Publish Date` | Date | Leave empty to publish immediately |
 | `Status` | Select | Only `Published` rows are synced |
 
 ---
 
-## GEO / SEO setup
+## GEO and SEO setup
 
 For your site to appear in LLM answers and search results:
 
-1. **Google Search Console** → verify domain → submit sitemap `https://yoursite.com/sitemap.xml`
-2. **Bing Webmaster Tools** → download `BingSiteAuth.xml` → place in `static/` → submit sitemap
-3. **Yandex Webmaster** → download verification HTML → place in `static/` → submit sitemap
-4. **Wikidata** → create a Person item → add your Q-id to `OWNER_WIKIDATA` env var
-5. **Cross-link** → add your site URL to GitHub, LinkedIn, and Telegram profiles
+1. **Google Search Console**: verify the domain, then submit the sitemap `https://yoursite.com/sitemap.xml`
+2. **Bing Webmaster Tools**: download `BingSiteAuth.xml`, place it in `static/`, then submit the sitemap
+3. **Yandex Webmaster**: download the verification HTML, place it in `static/`, then submit the sitemap
+4. **Wikidata**: create a Person item, then add your Q-id to `OWNER_WIKIDATA`
+5. **Cross-link**: add your site URL to your GitHub, LinkedIn, and Telegram profiles
 
 ---
 
@@ -174,7 +173,7 @@ For your site to appear in LLM answers and search results:
 | `POST` | `/api/posts` | Create a post |
 | `PUT` | `/api/posts/:slug` | Update a post |
 | `DELETE` | `/api/posts/:slug` | Delete a post |
-| `POST` | `/api/sync` | Trigger Notion sync (`X-Sync-Secret` header) |
+| `POST` | `/api/sync` | Trigger Notion sync (needs the `X-Sync-Secret` header) |
 
 ---
 
@@ -187,22 +186,22 @@ Every crawler visit is logged with a `[BOT]` prefix:
 [BOT] 2026-05-29 15:01:44 | Perplexity | GET /sitemap.xml
 ```
 
-In Railway: **Deployments → active deploy → Deploy Logs** → filter by `[BOT]`.
+In Railway, open **Deployments**, then the active deploy, then **Deploy Logs**, and filter by `[BOT]`.
 
 ---
 
 ## Stack
 
-- [FastAPI](https://fastapi.tiangolo.com/) — web framework
-- [SQLAlchemy](https://www.sqlalchemy.org/) + PostgreSQL — database
-- [Jinja2](https://jinja.palletsprojects.com/) — SSR templates with custom `[[ ]]` delimiters
-- [APScheduler](https://apscheduler.readthedocs.io/) — weekly Notion sync
-- [notion-client](https://github.com/ramnes/notion-sdk-py) — Notion API
+- [FastAPI](https://fastapi.tiangolo.com/): web framework
+- [SQLAlchemy](https://www.sqlalchemy.org/) and PostgreSQL: database
+- [Jinja2](https://jinja.palletsprojects.com/): SSR templates with custom `[[ ]]` delimiters
+- [APScheduler](https://apscheduler.readthedocs.io/): weekly Notion sync
+- [notion-client](https://github.com/ramnes/notion-sdk-py): Notion API
 
 ---
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
 
 Built by [Daniel Levinishnikov](https://llmceo.com).
