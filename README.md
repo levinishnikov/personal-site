@@ -1,22 +1,40 @@
+<div align="center">
+
 # personal-site
 
-A minimal, fast personal website with a blog — optimised for LLMs and search engines (GEO/SEO).  
-Built with FastAPI + PostgreSQL + Notion sync. Deploys to Railway in minutes.
+### A fast personal website + blog, built to be read by LLMs as much as by people.
 
-**Live example:** [llmceo.com](https://llmceo.com) — Daniel Levinishnikov, Head of AI Products at T-Bank.
+Server-rendered FastAPI · Notion as CMS · JSON-LD entity graph · deploys to Railway in minutes.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776ab.svg?logo=python&logoColor=white)](https://www.python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Deploy on Railway](https://img.shields.io/badge/Deploy-Railway-9d4edd.svg?logo=railway&logoColor=white)](https://railway.app)
+
+**[Live demo → llmceo.com](https://llmceo.com)**
+
+</div>
 
 ---
 
+## Why this exists
+
+Search is shifting from "ten blue links" to direct answers from ChatGPT, Perplexity, and Claude.
+To show up in those answers your content has to be *machine-readable*: server-rendered HTML, a
+structured entity graph, and explicit crawler permissions. Most personal sites fail all three.
+
+This one ships them by default — fork it, edit one file, deploy.
+
 ## Features
 
-- **Server-side rendering** — full HTML on first load; crawlers and LLM retrievers see all content
-- **Notion CMS** — write posts in Notion, they sync automatically every week (or on demand)
-- **JSON-LD entity graph** — Person + WebSite + Article schema on every page
-- **Bot-friendly** — robots.txt with explicit AI crawler permissions, llms.txt, dynamic sitemap
-- **Liquid glass UI** — Apple-style design with backdrop-filter and specular highlights
-- **Bot logging** — every crawler visit appears in deploy logs with `[BOT]` prefix
-- **RSS feed** — `/feed.xml` out of the box
-- **Zero-JS content** — critical text never depends on JavaScript
+- 🔎 **Server-side rendering** — full HTML on first load; crawlers and LLM retrievers see everything
+- 📝 **Notion as CMS** — write posts in Notion, they sync automatically (weekly or on demand)
+- 🧠 **JSON-LD entity graph** — Person + WebSite + Article schema on every page
+- 🤖 **Bot-friendly** — explicit AI-crawler allowlist in robots.txt, llms.txt, dynamic sitemap
+- 🪟 **Liquid glass UI** — Apple-style design with backdrop-filter and specular highlights
+- 📊 **Bot logging** — every crawler visit shows up in deploy logs with a `[BOT]` prefix
+- 📡 **RSS feed** — `/feed.xml` out of the box
+- ⚡ **Zero-JS content** — critical text never depends on JavaScript
 
 ---
 
