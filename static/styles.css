@@ -1040,23 +1040,6 @@ main {
   border-color: var(--text);
 }
 
-.post-author {
-  margin-top: 8px;
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.post-author a {
-  color: var(--muted);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.post-author a:hover {
-  color: var(--text);
-  border-color: var(--text);
-}
 
 .post-body {
   border-radius: 20px;
