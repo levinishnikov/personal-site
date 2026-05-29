@@ -103,7 +103,7 @@ def _person_node() -> dict:
         "description": FACTUAL_DESCRIPTION,
         "sameAs": [
             "https://t.me/llm_ceo1",
-            "https://www.linkedin.com/in/levi71",
+            "https://www.linkedin.com/in/levinishnikov",
             "https://github.com/levinishnikov",
         ],
     }
