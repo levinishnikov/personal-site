@@ -10,14 +10,32 @@ from sqlalchemy import text, or_
 from apscheduler.schedulers.background import BackgroundScheduler
 from pathlib import Path
 from typing import List
-from datetime import date
+from datetime import date, datetime
 import os
+import logging
 import jinja2
 import models
 import database
 import schemas
 import sync
 import seo
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger = logging.getLogger("bot")
+
+KNOWN_BOTS = {
+    "Googlebot": "Google",
+    "Google-Extended": "Google-Extended",
+    "Applebot": "Apple",
+    "Bingbot": "Bing",
+    "YandexBot": "Yandex",
+    "PerplexityBot": "Perplexity",
+    "OAI-SearchBot": "OpenAI-Search",
+    "GPTBot": "GPTBot",
+    "ChatGPT-User": "ChatGPT",
+    "ClaudeBot": "Claude",
+    "Claude-User": "Claude-User",
+}
 
 BASE_DIR = Path(__file__).parent
 STATIC_DIR = BASE_DIR.parent / "static"
@@ -44,6 +62,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def log_bots(request: Request, call_next):
+    ua = request.headers.get("user-agent", "")
+    for token, name in KNOWN_BOTS.items():
+        if token.lower() in ua.lower():
+            ts = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+            logger.info(f"[BOT] {ts} | {name} | {request.method} {request.url.path}")
+            break
+    return await call_next(request)
 
 # Jinja2 with custom delimiters so inline JS/JSON braces are never touched
 _env = jinja2.Environment(
