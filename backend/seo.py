@@ -9,15 +9,13 @@ import html
 from datetime import date, datetime, timezone
 from email.utils import format_datetime
 
-BASE = "https://llmceo.com"
-IMAGE = f"{BASE}/daniel-levinishnikov.jpg"
-FACTUAL_DESCRIPTION = (
-    "Head of AI Products at T-Bank, building LLM agents, chatbots and voice "
-    "systems for customer support automation."
-)
+import config
+
+BASE  = config.SITE_DOMAIN
+IMAGE = config.avatar_url()
 
 
-# ── Text helpers ─────────────────────────────────────────────────────────────
+# ── Text helpers ──────────────────────────────────────────────────────────────
 
 def excerpt(body_html: str, limit: int = 155) -> str:
     text = re.sub(r"<[^>]+>", " ", body_html or "")
@@ -32,7 +30,7 @@ def xesc(s: str) -> str:
     return html.escape(s or "", quote=False)
 
 
-# ── Dates ────────────────────────────────────────────────────────────────────
+# ── Dates ─────────────────────────────────────────────────────────────────────
 
 def iso_date(post) -> str:
     if post.publish_date:
@@ -81,33 +79,32 @@ def _website_node() -> dict:
         "@type": "WebSite",
         "@id": f"{BASE}/#website",
         "url": f"{BASE}/",
-        "name": "Daniel Levinishnikov",
-        "publisher": {"@id": f"{BASE}/#daniel"},
+        "name": config.OWNER_NAME,
+        "publisher": {"@id": f"{BASE}/#owner"},
         "inLanguage": "en",
     }
 
 
 def _person_node() -> dict:
-    return {
+    node: dict = {
         "@type": "Person",
-        "@id": f"{BASE}/#daniel",
-        "name": "Daniel Levinishnikov",
+        "@id": f"{BASE}/#owner",
+        "name": config.OWNER_NAME,
         "url": f"{BASE}/",
         "image": IMAGE,
-        "jobTitle": "Head of AI Products",
-        "worksFor": {"@type": "Organization", "name": "T-Bank", "url": "https://www.tbank.ru/"},
-        "knowsAbout": [
-            "AI products", "LLM agents", "Conversational AI", "Chatbots",
-            "Voice bots", "Machine learning", "Product management",
-        ],
-        "description": FACTUAL_DESCRIPTION,
-        "sameAs": [
-            "https://www.wikidata.org/wiki/Q139973632",
-            "https://t.me/llm_ceo1",
-            "https://www.linkedin.com/in/levinishnikov",
-            "https://github.com/levinishnikov",
-        ],
+        "jobTitle": config.OWNER_TITLE,
+        "description": config.OWNER_DESCRIPTION,
+        "sameAs": config.same_as(),
     }
+    if config.OWNER_EMPLOYER:
+        node["worksFor"] = {
+            "@type": "Organization",
+            "name": config.OWNER_EMPLOYER,
+            **({"url": config.OWNER_EMPLOYER_URL} if config.OWNER_EMPLOYER_URL else {}),
+        }
+    if config.OWNER_KNOWS_ABOUT:
+        node["knowsAbout"] = config.OWNER_KNOWS_ABOUT
+    return node
 
 
 def _breadcrumb_node(items: list) -> dict:
@@ -122,7 +119,10 @@ def _breadcrumb_node(items: list) -> dict:
 
 
 def _serialize(*page_nodes) -> str:
-    data = {"@context": "https://schema.org", "@graph": [_website_node(), _person_node(), *page_nodes]}
+    data = {
+        "@context": "https://schema.org",
+        "@graph": [_website_node(), _person_node(), *page_nodes],
+    }
     return json.dumps(data, ensure_ascii=False, indent=2).replace("</", "<\\/")
 
 
@@ -131,10 +131,10 @@ def home_graph() -> str:
         "@type": "ProfilePage",
         "@id": f"{BASE}/#webpage",
         "url": f"{BASE}/",
-        "name": "Daniel Levinishnikov — Head of AI Products at T-Bank",
+        "name": f"{config.OWNER_NAME} — {config.OWNER_TITLE}",
         "isPartOf": {"@id": f"{BASE}/#website"},
-        "about": {"@id": f"{BASE}/#daniel"},
-        "mainEntity": {"@id": f"{BASE}/#daniel"},
+        "about": {"@id": f"{BASE}/#owner"},
+        "mainEntity": {"@id": f"{BASE}/#owner"},
         "primaryImageOfPage": IMAGE,
         "inLanguage": "en",
     })
@@ -146,9 +146,9 @@ def posts_graph() -> str:
             "@type": "CollectionPage",
             "@id": f"{BASE}/posts.html#webpage",
             "url": f"{BASE}/posts.html",
-            "name": "Posts — Daniel Levinishnikov",
+            "name": f"Posts — {config.OWNER_NAME}",
             "isPartOf": {"@id": f"{BASE}/#website"},
-            "about": {"@id": f"{BASE}/#daniel"},
+            "about": {"@id": f"{BASE}/#owner"},
             "primaryImageOfPage": IMAGE,
             "inLanguage": "en",
         },
@@ -168,8 +168,8 @@ def post_graph(post) -> str:
             "dateModified": d,
             "url": url,
             "mainEntityOfPage": url,
-            "author": {"@id": f"{BASE}/#daniel"},
-            "publisher": {"@id": f"{BASE}/#daniel"},
+            "author": {"@id": f"{BASE}/#owner"},
+            "publisher": {"@id": f"{BASE}/#owner"},
             "isPartOf": {"@id": f"{BASE}/#website"},
             "image": IMAGE,
             "inLanguage": "en",
@@ -216,13 +216,13 @@ def build_feed(posts: list) -> str:
     return (
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>'
-        "<title>Daniel Levinishnikov</title>"
+        f"<title>{xesc(config.OWNER_NAME)}</title>"
         f"<link>{BASE}/</link>"
-        "<description>Head of AI Products at T-Bank. Posts on building useful AI.</description>"
+        f"<description>{xesc(config.HOME_DESCRIPTION)}</description>"
         "<language>en</language>"
         f'<atom:link href="{BASE}/feed.xml" rel="self" type="application/rss+xml"/>'
-        + "".join(items) +
-        "</channel></rss>"
+        + "".join(items)
+        + "</channel></rss>"
     )
 
 
@@ -230,15 +230,15 @@ def build_feed(posts: list) -> str:
 
 def render_404_html() -> str:
     return (
-        "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">"
-        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
-        "<title>Not found — Daniel Levinishnikov</title>"
-        "<meta name=\"robots\" content=\"noindex\">"
-        "<link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\">"
-        "<link rel=\"stylesheet\" href=\"/styles.css\"></head>"
-        "<body><main class=\"post-main\"><div style=\"padding:140px 0;text-align:center\">"
-        "<h1 style=\"font-size:64px;letter-spacing:-0.04em\">404</h1>"
-        "<p style=\"color:var(--muted);margin:12px 0 24px\">This page slipped past the AI.</p>"
-        "<a href=\"/\" class=\"all-posts-link\">← Back home</a>"
+        '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+        f"<title>Not found — {xesc(config.OWNER_NAME)}</title>"
+        '<meta name="robots" content="noindex">'
+        '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
+        '<link rel="stylesheet" href="/styles.css"></head>'
+        '<body><main class="post-main"><div style="padding:140px 0;text-align:center">'
+        '<h1 style="font-size:64px;letter-spacing:-0.04em">404</h1>'
+        '<p style="color:var(--muted);margin:12px 0 24px">Page not found.</p>'
+        '<a href="/" class="all-posts-link">← Back home</a>'
         "</div></main></body></html>"
     )

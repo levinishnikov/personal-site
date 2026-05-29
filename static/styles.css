@@ -775,6 +775,18 @@ main {
   letter-spacing: 0.01em;
 }
 
+.footer-template {
+  font-size: 11px;
+  color: rgba(110, 110, 115, 0.45);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
+}
+
+.footer-template:hover {
+  color: var(--muted);
+}
+
 /* BREADCRUMB */
 
 .breadcrumb {

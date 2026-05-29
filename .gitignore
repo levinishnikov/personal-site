@@ -1,5 +1,28 @@
-backend/.env
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+.venv/
+venv/
+
+# Environment — never commit real credentials
+backend/.env
+.env
+
+# macOS
 .DS_Store
+
+# Personal search-engine verification files — generate your own:
+#   Bing:   https://bing.com/webmasters
+#   Yandex: https://webmaster.yandex.ru
+static/BingSiteAuth.xml
+static/yandex_*.html
+
+# Personal avatar — replace with your own photo (see AVATAR_FILE env var)
+static/daniel-levinishnikov.jpg
+
+# IDE
+.idea/
+.vscode/
+*.swp
