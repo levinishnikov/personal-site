@@ -1,0 +1,20 @@
+# personal-site
+
+> Open-source personal website and blog template optimized for LLMs and search engines (Generative Engine Optimization, GEO). Server-rendered FastAPI, JSON-LD entity graph, Notion CMS, deploys to Railway.
+
+personal-site helps founders, executives, and developers build a personal website that AI assistants such as ChatGPT, Perplexity, and Claude can read, understand, and cite. It ships server-side rendering, a JSON-LD Person/WebSite/Article entity graph, an explicit AI-crawler allowlist in robots.txt, a dynamic sitemap, llms.txt, and an RSS feed by default. Rebrand the whole site by editing one file.
+
+## Docs
+- [README](https://github.com/levinishnikov/personal-site/blob/main/README.md): full setup, configuration, and deploy guide
+- [Live demo](https://llmceo.com): a production site built with this template
+
+## What it solves
+- Getting a personal site indexed and cited by ChatGPT, Perplexity, Claude, Google, Bing, and Yandex
+- Generative Engine Optimization (GEO) and LLM SEO for personal brands and developer portfolios
+- Machine-readable content: JSON-LD structured data, robots.txt, llms.txt, sitemap, RSS
+
+## Stack
+- FastAPI, Python, server-side rendering
+- PostgreSQL, SQLAlchemy
+- Notion as a CMS
+- Railway deployment
