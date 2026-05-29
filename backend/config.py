@@ -1,9 +1,20 @@
-"""Site configuration — every personal detail lives here as an env var.
+"""Site configuration.
 
-Fork this repo, copy .env.example to .env, fill in your values, and you're done.
-Templates and SEO helpers read from this module — you never need to touch them.
+Public identity (name, links, title) lives in backend/site.env, committed to git
+— edit that one file to make the site yours.
+
+Secrets (DATABASE_URL, NOTION_TOKEN, SYNC_SECRET) must NEVER go in site.env or any
+committed file. Set those in Railway variables, or a local backend/.env (gitignored).
+
+Precedence: real environment variables (Railway) > .env > site.env > defaults below.
 """
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+_HERE = Path(__file__).parent
+load_dotenv(_HERE / ".env")        # secrets — local only, gitignored
+load_dotenv(_HERE / "site.env")    # public identity — committed to git
 
 
 # ── Identity ──────────────────────────────────────────────────────────────────

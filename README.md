@@ -29,14 +29,24 @@ git clone https://github.com/YOUR_USERNAME/personal-site
 cd personal-site
 ```
 
-### 2. Set environment variables
+### 2. Make it yours
 
-```bash
-cp .env.example backend/.env
+Your **public identity** (name, title, links, descriptions) lives in one committed file:
+
+```
+backend/site.env
 ```
 
-Edit `backend/.env` with your details — see the comments in `.env.example`.  
-**This is the only file you must edit to make it yours.**
+Edit it — that's the only file you need to touch to rebrand the whole site.
+
+Your **secrets** (database URL, Notion token, sync secret) go in `backend/.env` for
+local dev, or in Railway variables for production. Never commit them:
+
+```bash
+cp .env.example backend/.env   # then fill in your secrets
+```
+
+Precedence: real environment variables (Railway) > `backend/.env` > `backend/site.env` > defaults.
 
 ### 3. Run locally
 
