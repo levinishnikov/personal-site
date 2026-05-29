@@ -1016,6 +1016,10 @@ main {
   margin-top: 24px;
 }
 
+.post-tg-author {
+  margin-top: 8px;
+}
+
 .post-tg-inline hr {
   border: none;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
