@@ -48,9 +48,10 @@ def date_label(post) -> str:
 
 
 def date_full(post) -> str:
-    """Long label for the post header: 'May 2026' or just the year."""
+    """Long label for the post header: 'May 29, 2026' or just the year."""
     if post.publish_date:
-        return post.publish_date.strftime("%B %Y")
+        day = post.publish_date.day
+        return post.publish_date.strftime(f"%B {day}, %Y")
     return str(post.year)
 
 
