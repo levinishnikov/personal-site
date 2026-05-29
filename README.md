@@ -15,8 +15,6 @@ Server-rendered FastAPI, Notion as CMS, JSON-LD entity graph, deploys to Railway
 
 </div>
 
----
-
 ## Why this exists
 
 Search is shifting from "ten blue links" to direct answers from ChatGPT, Perplexity, and Claude.
@@ -35,8 +33,6 @@ This one ships them by default. Fork it, edit one file, deploy.
 - **Bot logging**: every crawler visit shows up in deploy logs with a `[BOT]` prefix
 - **RSS feed**: `/feed.xml` out of the box
 - **Zero-JS content**: critical text never depends on JavaScript
-
----
 
 ## Quick start
 
@@ -97,8 +93,6 @@ For the bio, career path, and other page copy, edit the templates directly:
 4. Set your secrets (from `.env.example`) in Railway under Variables
 5. Railway auto-deploys on every push
 
----
-
 ## Configuration reference
 
 Public identity lives in `backend/site.env`. Secrets live in Railway or `backend/.env`.
@@ -136,8 +130,6 @@ Public identity lives in `backend/site.env`. Secrets live in Railway or `backend
 | `NOTION_DATABASE_ID` | ID of the Notion database with posts |
 | `SYNC_SECRET` | Secret for the `POST /api/sync` webhook (optional) |
 
----
-
 ## Notion database schema
 
 Your Notion database needs these properties:
@@ -150,8 +142,6 @@ Your Notion database needs these properties:
 | `Publish Date` | Date | Leave empty to publish immediately |
 | `Status` | Select | Only `Published` rows are synced |
 
----
-
 ## GEO and SEO setup
 
 For your site to appear in LLM answers and search results:
@@ -161,8 +151,6 @@ For your site to appear in LLM answers and search results:
 3. **Yandex Webmaster**: download the verification HTML, place it in `static/`, then submit the sitemap
 4. **Wikidata**: create a Person item, then add your Q-id to `OWNER_WIKIDATA`
 5. **Cross-link**: add your site URL to your GitHub, LinkedIn, and Telegram profiles
-
----
 
 ## API
 
@@ -175,8 +163,6 @@ For your site to appear in LLM answers and search results:
 | `DELETE` | `/api/posts/:slug` | Delete a post |
 | `POST` | `/api/sync` | Trigger Notion sync (needs the `X-Sync-Secret` header) |
 
----
-
 ## Bot monitoring
 
 Every crawler visit is logged with a `[BOT]` prefix:
@@ -188,8 +174,6 @@ Every crawler visit is logged with a `[BOT]` prefix:
 
 In Railway, open **Deployments**, then the active deploy, then **Deploy Logs**, and filter by `[BOT]`.
 
----
-
 ## Stack
 
 - [FastAPI](https://fastapi.tiangolo.com/): web framework
@@ -197,8 +181,6 @@ In Railway, open **Deployments**, then the active deploy, then **Deploy Logs**, 
 - [Jinja2](https://jinja.palletsprojects.com/): SSR templates with custom `[[ ]]` delimiters
 - [APScheduler](https://apscheduler.readthedocs.io/): weekly Notion sync
 - [notion-client](https://github.com/ramnes/notion-sdk-py): Notion API
-
----
 
 ## License
 
