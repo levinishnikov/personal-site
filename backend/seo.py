@@ -226,6 +226,38 @@ def build_feed(posts: list) -> str:
     )
 
 
+# ── robots.txt ────────────────────────────────────────────────────────────────
+
+_ROBOTS_AGENTS = [
+    "OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User",
+    "PerplexityBot", "Perplexity-User", "Googlebot", "Bingbot", "Applebot",
+    "YandexBot", "GPTBot", "ClaudeBot", "Google-Extended",
+]
+
+
+def build_robots() -> str:
+    allow_block = "\n".join(f"User-agent: {a}" for a in _ROBOTS_AGENTS)
+    return (
+        f"{allow_block}\n"
+        "Allow: /\n\n"
+        "User-agent: *\n"
+        "Allow: /\n\n"
+        f"Sitemap: {BASE}/sitemap.xml\n"
+    )
+
+
+# ── llms.txt ──────────────────────────────────────────────────────────────────
+
+def build_llms() -> str:
+    return (
+        f"# {config.OWNER_NAME}\n"
+        f"> {config.OWNER_DESCRIPTION}\n\n"
+        "## Pages\n"
+        f"- [Home]({BASE}/)\n"
+        f"- [Posts]({BASE}/posts.html)\n"
+    )
+
+
 # ── 404 ───────────────────────────────────────────────────────────────────────
 
 def render_404_html() -> str:

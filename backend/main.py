@@ -90,8 +90,11 @@ _env.globals.update({
     "owner_telegram":   config.OWNER_TELEGRAM,
     "owner_linkedin":   config.OWNER_LINKEDIN,
     "owner_github":     config.OWNER_GITHUB,
+    "takes_telegram":   config.TAKES_TELEGRAM,
+    "takes_url":        config.takes_url(),
     "hero_cta_url":     config.HERO_CTA_URL,
     "hero_cta_text":    config.HERO_CTA_TEXT,
+    "og_image":         config.avatar_url(),
 })
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
@@ -223,6 +226,14 @@ def redirect_legacy_post(slug: str = ""):
 
 
 # ── Machine-readable ──────────────────────────────────────────────────────────
+
+@app.get("/robots.txt")
+def robots():
+    return Response(seo.build_robots(), media_type="text/plain")
+
+@app.get("/llms.txt")
+def llms():
+    return Response(seo.build_llms(), media_type="text/plain")
 
 @app.get("/sitemap.xml")
 def sitemap(db: Session = Depends(database.get_db)):

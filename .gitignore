@@ -19,9 +19,6 @@ backend/.env
 static/BingSiteAuth.xml
 static/yandex_*.html
 
-# Personal avatar — replace with your own photo (see AVATAR_FILE env var)
-static/daniel-levinishnikov.jpg
-
 # IDE
 .idea/
 .vscode/
