@@ -947,7 +947,7 @@ main {
 }
 
 .post-header {
-  padding: 80px 0 32px;
+  padding: 28px 0 32px;
   animation: fadeUp 0.7s ease 0.05s both;
 }
 
@@ -1036,6 +1036,24 @@ main {
 }
 
 .post-tg-inline a:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+.post-author {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.post-author a {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.post-author a:hover {
   color: var(--text);
   border-color: var(--text);
 }
