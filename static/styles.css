@@ -838,7 +838,20 @@ main {
 
 @media (max-width: 600px) {
   .nav {
-    padding: 16px 20px;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+  }
+
+  /* Hide the name on small screens — avatar below makes it redundant,
+     and it's the only thing that causes the two pills to overlap. */
+  .nav-brand,
+  .nav-sep {
+    display: none;
+  }
+
+  .nav-pill-left {
+    padding: 6px 6px;
   }
 
   .nav-social {
