@@ -233,8 +233,8 @@ def robots():
     return Response(seo.build_robots(), media_type="text/plain")
 
 @app.get("/llms.txt")
-def llms():
-    return Response(seo.build_llms(), media_type="text/plain")
+def llms(db: Session = Depends(database.get_db)):
+    return Response(seo.build_llms(published_posts(db)), media_type="text/plain")
 
 @app.get("/sitemap.xml")
 def sitemap(db: Session = Depends(database.get_db)):

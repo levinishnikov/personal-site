@@ -90,6 +90,8 @@ def _person_node() -> dict:
         "@type": "Person",
         "@id": f"{BASE}/#owner",
         "name": config.OWNER_NAME,
+        "givenName": config.OWNER_NAME_FIRST,
+        "familyName": config.OWNER_NAME_LAST,
         "url": f"{BASE}/",
         "image": IMAGE,
         "jobTitle": config.OWNER_TITLE,
@@ -186,7 +188,7 @@ def post_graph(post) -> str:
 
 def build_sitemap(posts: list) -> str:
     today = date.today().isoformat()
-    urls = [(f"{BASE}/", today), (f"{BASE}/posts.html", today)]
+    urls = [(f"{BASE}/", today), (f"{BASE}/posts.html", today), (f"{BASE}/shop/", today)]
     urls += [(f"{BASE}/posts/{p.slug}", iso_date(p)) for p in posts]
     body = "".join(
         f"<url><loc>{loc}</loc><lastmod>{mod}</lastmod></url>" for loc, mod in urls
@@ -248,14 +250,40 @@ def build_robots() -> str:
 
 # ── llms.txt ──────────────────────────────────────────────────────────────────
 
-def build_llms() -> str:
-    return (
-        f"# {config.OWNER_NAME}\n"
-        f"> {config.OWNER_DESCRIPTION}\n\n"
-        "## Pages\n"
-        f"- [Home]({BASE}/)\n"
-        f"- [Posts]({BASE}/posts.html)\n"
-    )
+def build_llms(posts=None) -> str:
+    """Machine-readable site summary for LLM retrievers (llms.txt spec).
+    Assembled entirely from committed config + published posts — no new claims."""
+    lines = [f"# {config.OWNER_NAME}", "", f"> {config.OWNER_DESCRIPTION}", ""]
+
+    # One factual sentence built from config fields (role, employer, expertise).
+    bio = f"{config.OWNER_NAME} is {config.OWNER_TITLE}"
+    if config.OWNER_EMPLOYER:
+        bio += f" at {config.OWNER_EMPLOYER}"
+    bio += "."
+    if config.OWNER_KNOWS_ABOUT:
+        bio += " Areas of expertise: " + ", ".join(config.OWNER_KNOWS_ABOUT) + "."
+    lines += [bio, ""]
+
+    lines += [
+        "## Pages",
+        f"- [Home]({BASE}/): profile and recent writing",
+        f"- [Posts]({BASE}/posts.html): essays on AI products, LLM agents, and machine learning",
+        f"- [Shop]({BASE}/shop/): from_llmceo_with_love — a limited-run cap drop for the people building AI",
+        "",
+    ]
+
+    if posts:
+        lines.append("## Writing")
+        lines += [f"- [{p.title}]({BASE}/posts/{p.slug})" for p in posts[:25]]
+        lines.append("")
+
+    links = config.same_as()
+    if links:
+        lines.append("## Links")
+        lines += [f"- {u}" for u in links]
+        lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
 
 
 # ── 404 ───────────────────────────────────────────────────────────────────────
