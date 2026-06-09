@@ -6,3 +6,4 @@ python-dotenv
 notion-client==2.2.1
 apscheduler
 jinja2
+httpx

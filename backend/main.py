@@ -14,6 +14,7 @@ from datetime import date, datetime
 import os
 import logging
 import jinja2
+import httpx
 
 import config
 import models
@@ -309,6 +310,62 @@ async def not_found_handler(request: Request, exc: StarletteHTTPException):
     if exc.status_code == 404 and not request.url.path.startswith("/api/"):
         return HTMLResponse(seo.render_404_html(), status_code=404)
     return await http_exception_handler(request, exc)
+
+
+# ── Shop reverse proxy (llmceo.com/shop → private storefront service) ──────────
+# The storefront is a separate PRIVATE repo + Railway service. We reverse-proxy it
+# under /shop (stripping the prefix) so it appears seamlessly at llmceo.com/shop —
+# its source never enters this public repo. The shop's frontend is base-path aware
+# (window.__SHOP_BASE__ = "/shop"), so it requests all its assets/api back through
+# /shop, which lands here and is forwarded to the shop's own root.
+
+SHOP_ORIGIN = os.getenv(
+    "SHOP_ORIGIN", "https://web-production-29263.up.railway.app"
+).rstrip("/")
+
+_HOP_BY_HOP = {
+    "connection", "keep-alive", "proxy-authenticate", "proxy-authorization",
+    "te", "trailers", "transfer-encoding", "upgrade",
+    "content-encoding", "content-length",  # httpx already decoded the body
+}
+
+
+@app.api_route("/shop", methods=["GET", "HEAD"])
+async def shop_index_redirect():
+    # Trailing slash so the SPA's relative "./src/main.js" resolves under /shop/.
+    return RedirectResponse("/shop/", status_code=308)
+
+
+@app.api_route("/shop/{path:path}",
+               methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS", "HEAD"])
+async def shop_proxy(path: str, request: Request):
+    upstream = f"{SHOP_ORIGIN}/{path}"
+    # Drop Host (httpx sets it from the URL) and Accept-Encoding (so the upstream body
+    # is identity-encoded and can be returned as-is); forward everything else.
+    fwd = {k: v for k, v in request.headers.items()
+           if k.lower() not in ("host", "accept-encoding", "content-length")}
+    body = await request.body()
+    try:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=False) as client:
+            up = await client.request(
+                request.method, upstream,
+                params=request.query_params,
+                content=body or None,
+                headers=fwd,
+            )
+    except httpx.RequestError:
+        return Response("Shop is temporarily unavailable.", status_code=502,
+                        media_type="text/plain")
+    headers = {k: v for k, v in up.headers.items()
+               if k.lower() not in _HOP_BY_HOP and k.lower() not in ("content-type", "location")}
+    # Keep the user under /shop even if the upstream issues a root-relative redirect.
+    loc = up.headers.get("location")
+    if loc:
+        if loc.startswith("/") and not loc.startswith("/shop"):
+            loc = "/shop" + loc
+        headers["location"] = loc
+    return Response(content=up.content, status_code=up.status_code,
+                    headers=headers, media_type=up.headers.get("content-type"))
 
 
 # Static assets — mounted last so app routes take priority
