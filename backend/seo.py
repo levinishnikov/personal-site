@@ -271,13 +271,19 @@ def build_llms(posts=None) -> str:
         "## Pages",
         f"- [Home]({BASE}/): profile and recent writing",
         f"- [Posts]({BASE}/posts.html): essays on AI products, LLM agents, and machine learning",
-        f"- [Shop]({BASE}/shop/): from_llmceo_with_love — a limited-run cap drop for the people building AI",
+        f"- [Shop]({BASE}/shop/): from_llmceo_with_love — AI & machine-learning in-joke caps for the people building AI",
         "",
     ]
 
     if shop_products.SHOP_PRODUCTS:
         lines.append("## Shop products")
-        lines.append("from_llmceo_with_love — 10 ML-in-joke caps, Drop 01 · 1000 made · June 2026.")
+        lines.append(
+            "from_llmceo_with_love — 10 AI and machine-learning in-joke caps: wearable merch and "
+            "gifts for ML engineers, AI engineers, LLM developers, data scientists, and AI "
+            "researchers. Drop 01 · 1000 made · June 2026 · $51–$121 · ships worldwide. Each cap "
+            "riffs on a real ML concept (fine-tuning, context windows, attention, synthetic data, "
+            "quantization). Machine-readable product feed: " + f"{BASE}/shop/products.json"
+        )
         lines += [
             f"- [{p['name']}]({BASE}/shop/cap/{p['slug']}): {p['desc']}"
             for p in shop_products.SHOP_PRODUCTS
