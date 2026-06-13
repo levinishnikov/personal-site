@@ -10,6 +10,7 @@ from datetime import date, datetime, timezone
 from email.utils import format_datetime
 
 import config
+import shop_products
 
 BASE  = config.SITE_DOMAIN
 IMAGE = config.avatar_url()
@@ -189,6 +190,8 @@ def post_graph(post) -> str:
 def build_sitemap(posts: list) -> str:
     today = date.today().isoformat()
     urls = [(f"{BASE}/", today), (f"{BASE}/posts.html", today), (f"{BASE}/shop/", today)]
+    # Shop product pages — real, server-rendered URLs (shop backend/ssr.py).
+    urls += [(f"{BASE}/shop/cap/{p['slug']}", today) for p in shop_products.SHOP_PRODUCTS]
     urls += [(f"{BASE}/posts/{p.slug}", iso_date(p)) for p in posts]
     body = "".join(
         f"<url><loc>{loc}</loc><lastmod>{mod}</lastmod></url>" for loc, mod in urls
@@ -271,6 +274,15 @@ def build_llms(posts=None) -> str:
         f"- [Shop]({BASE}/shop/): from_llmceo_with_love — a limited-run cap drop for the people building AI",
         "",
     ]
+
+    if shop_products.SHOP_PRODUCTS:
+        lines.append("## Shop products")
+        lines.append("from_llmceo_with_love — 10 ML-in-joke caps, Drop 01 · 1000 made · June 2026.")
+        lines += [
+            f"- [{p['name']}]({BASE}/shop/cap/{p['slug']}): {p['desc']}"
+            for p in shop_products.SHOP_PRODUCTS
+        ]
+        lines.append("")
 
     if posts:
         lines.append("## Writing")
