@@ -1,6 +1,9 @@
+import hashlib
 import os
 import re
+import urllib.request
 from datetime import date
+from pathlib import Path
 from notion_client import Client
 from sqlalchemy.orm import Session
 import models
@@ -8,6 +11,52 @@ from database import SessionLocal
 
 notion = Client(auth=os.getenv("NOTION_API_KEY", ""))
 DATABASE_ID = os.getenv("NOTION_DATABASE_ID", "")
+
+# Notion hands out presigned file URLs that die after roughly an hour, so every
+# picture is copied into our own static dir at sync time and served from there.
+# The container filesystem is ephemeral, which is fine: a sync runs on boot, so
+# a redeploy refills this directory before anyone can ask for an image.
+IMAGE_DIR = Path(__file__).parent.parent / "static" / "post-images"
+IMAGE_URL_PREFIX = "/post-images"
+IMAGE_EXT = {
+    "image/jpeg": ".jpg", "image/jpg": ".jpg", "image/png": ".png",
+    "image/webp": ".webp", "image/gif": ".gif", "image/avif": ".avif",
+}
+
+
+def cache_image(url: str, slug: str) -> str:
+    """Download one Notion image into /static/post-images. Returns its site path.
+
+    Named by content hash, so an unchanged picture is downloaded once and a
+    replaced one never collides with its predecessor. Returns "" on any
+    failure — a missing picture must never cost us the post's text.
+    """
+    if not url:
+        return ""
+    try:
+        IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+        req = urllib.request.Request(url, headers={"User-Agent": "llmceo-sync"})
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = resp.read()
+            ctype = (resp.headers.get("content-type") or "").split(";")[0].strip()
+        ext = IMAGE_EXT.get(ctype, ".jpg")
+        name = "{}-{}{}".format(slug or "post", hashlib.sha1(data).hexdigest()[:12], ext)
+        path = IMAGE_DIR / name
+        if not path.exists():
+            path.write_bytes(data)
+        return "{}/{}".format(IMAGE_URL_PREFIX, name)
+    except Exception:
+        return ""
+
+
+def cover_from_props(props: dict, slug: str) -> str:
+    """The row's `Cover` property -> a local image path (or "")."""
+    files = (props.get("Cover") or {}).get("files") or []
+    if not files:
+        return ""
+    first = files[0]
+    url = (first.get("file") or first.get("external") or {}).get("url", "")
+    return cache_image(url, slug)
 
 
 def slugify(text: str) -> str:
@@ -56,7 +105,7 @@ def get_children(block_id: str) -> list:
         return []
 
 
-def blocks_to_html(blocks: list, depth: int = 0) -> str:
+def blocks_to_html(blocks: list, depth: int = 0, slug: str = "") -> str:
     html = ""
     i = 0
     while i < len(blocks):
@@ -84,7 +133,7 @@ def blocks_to_html(blocks: list, depth: int = 0) -> str:
                 item_html = rich_text_to_html(r)
                 if blocks[i].get("has_children"):
                     children = get_children(blocks[i]["id"])
-                    item_html += blocks_to_html(children, depth + 1)
+                    item_html += blocks_to_html(children, depth + 1, slug)
                 items.append(f"<li>{item_html}</li>")
                 i += 1
             html += f"<ul>{''.join(items)}</ul>\n"
@@ -97,7 +146,7 @@ def blocks_to_html(blocks: list, depth: int = 0) -> str:
                 item_html = rich_text_to_html(r)
                 if blocks[i].get("has_children"):
                     children = get_children(blocks[i]["id"])
-                    item_html += blocks_to_html(children, depth + 1)
+                    item_html += blocks_to_html(children, depth + 1, slug)
                 items.append(f"<li>{item_html}</li>")
                 i += 1
             html += f"<ol>{''.join(items)}</ol>\n"
@@ -115,19 +164,19 @@ def blocks_to_html(blocks: list, depth: int = 0) -> str:
 
         elif btype == "quote":
             inner = rich_text_to_html(rich)
-            children_html = blocks_to_html(get_children(block["id"])) if has_children else ""
+            children_html = blocks_to_html(get_children(block["id"]), depth + 1, slug) if has_children else ""
             html += f"<blockquote>{inner}{children_html}</blockquote>\n"
 
         elif btype == "callout":
             icon_obj = content.get("icon", {})
             icon = icon_obj.get("emoji", "") if icon_obj.get("type") == "emoji" else "💡"
             inner = rich_text_to_html(rich)
-            children_html = blocks_to_html(get_children(block["id"])) if has_children else ""
+            children_html = blocks_to_html(get_children(block["id"]), depth + 1, slug) if has_children else ""
             html += f'<div class="callout"><span class="callout-icon">{icon}</span><div>{inner}{children_html}</div></div>\n'
 
         elif btype == "toggle":
             inner = rich_text_to_html(rich)
-            children_html = blocks_to_html(get_children(block["id"])) if has_children else ""
+            children_html = blocks_to_html(get_children(block["id"]), depth + 1, slug) if has_children else ""
             html += f"<details><summary>{inner}</summary>{children_html}</details>\n"
 
         elif btype == "divider":
@@ -137,8 +186,11 @@ def blocks_to_html(blocks: list, depth: int = 0) -> str:
             file_obj = content.get("file") or content.get("external") or {}
             url = file_obj.get("url", "")
             caption_html = rich_text_to_html(content.get("caption", []))
-            if url:
-                html += f'<figure><img src="{url}" alt="{caption_html}"><figcaption>{caption_html}</figcaption></figure>\n'
+            # Copy it locally: a Notion URL rendered straight into the page
+            # goes dead about an hour after this sync ran.
+            local = cache_image(url, slug)
+            if local:
+                html += f'<figure><img src="{local}" alt="{caption_html}" loading="lazy"><figcaption>{caption_html}</figcaption></figure>\n'
 
         elif btype == "table":
             rows = get_children(block["id"])
@@ -156,7 +208,7 @@ def blocks_to_html(blocks: list, depth: int = 0) -> str:
             html += '<div class="columns">\n'
             for col in columns:
                 col_blocks = get_children(col["id"])
-                html += f'<div class="column">{blocks_to_html(col_blocks, depth + 1)}</div>\n'
+                html += f'<div class="column">{blocks_to_html(col_blocks, depth + 1, slug)}</div>\n'
             html += "</div>\n"
 
         else:
@@ -200,7 +252,8 @@ def sync_notion_to_db() -> dict:
                 publish_date = date.fromisoformat(pd_start["start"][:10])
 
             blocks = notion.blocks.children.list(block_id=page["id"]).get("results", [])
-            body = blocks_to_html(blocks)
+            body = blocks_to_html(blocks, slug=slug)
+            cover_url = cover_from_props(props, slug)
 
             existing = db.query(models.Post).filter(models.Post.slug == slug).first()
             if existing:
@@ -208,9 +261,13 @@ def sync_notion_to_db() -> dict:
                 existing.body = body
                 existing.year = year
                 existing.publish_date = publish_date
+                # Keep the picture we already have if this run could not fetch
+                # one; a transient download failure must not blank the page.
+                if cover_url:
+                    existing.cover_url = cover_url
             else:
                 db.add(models.Post(
-                    slug=slug, title=title, body=body,
+                    slug=slug, title=title, body=body, cover_url=cover_url or None,
                     year=year, publish_date=publish_date
                 ))
             synced += 1

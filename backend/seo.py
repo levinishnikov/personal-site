@@ -63,6 +63,15 @@ def rfc822(post) -> str:
     return format_datetime(dt)
 
 
+def absolute(path: str) -> str:
+    """Site-relative image path -> full URL. Already-absolute URLs pass through."""
+    if not path:
+        return ""
+    if path.startswith(("http://", "https://")):
+        return path
+    return "{}/{}".format(BASE, path.lstrip("/"))
+
+
 def post_view(post) -> dict:
     """Plain dict for templates — keeps date logic out of the markup."""
     return {
@@ -70,6 +79,7 @@ def post_view(post) -> dict:
         "title": post.title,
         "date_label": date_label(post),
         "date_full": date_full(post),
+        "cover_url": getattr(post, "cover_url", "") or "",
     }
 
 
@@ -174,7 +184,7 @@ def post_graph(post) -> str:
             "author": {"@id": f"{BASE}/#owner"},
             "publisher": {"@id": f"{BASE}/#owner"},
             "isPartOf": {"@id": f"{BASE}/#website"},
-            "image": IMAGE,
+            "image": absolute(getattr(post, "cover_url", "")) or IMAGE,
             "inLanguage": "en",
         },
         _breadcrumb_node([

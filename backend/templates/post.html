@@ -22,6 +22,12 @@
         <h1 class="post-title">[[ post.title ]]</h1>
       </header>
 
+      [% if post.cover_url %]
+      <figure class="post-cover">
+        <img src="[[ post.cover_url ]]" alt="[[ post.title ]]">
+      </figure>
+      [% endif %]
+
       <div class="post-body glass">
         <div class="post-meta">
           <span class="post-date">[[ post.date_full ]]</span>

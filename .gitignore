@@ -23,3 +23,6 @@ static/yandex_*.html
 .idea/
 .vscode/
 *.swp
+
+# Post images cached from Notion at sync time (runtime artifacts)
+static/post-images/

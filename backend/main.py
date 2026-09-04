@@ -10,7 +10,7 @@ from sqlalchemy import text, or_
 from apscheduler.schedulers.background import BackgroundScheduler
 from pathlib import Path
 from typing import List
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import os
 import logging
 import jinja2
@@ -54,6 +54,7 @@ models.Base.metadata.create_all(bind=database.engine)
 
 with database.engine.connect() as conn:
     conn.execute(text("ALTER TABLE posts ADD COLUMN IF NOT EXISTS publish_date DATE"))
+    conn.execute(text("ALTER TABLE posts ADD COLUMN IF NOT EXISTS cover_url VARCHAR"))
     conn.commit()
 
 # ── App ───────────────────────────────────────────────────────────────────────
@@ -105,6 +106,13 @@ templates.env = _env
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(sync.sync_notion_to_db, "interval", weeks=1, id="notion_sync")
+# Post images are cached on the container's own disk, which a redeploy wipes.
+# Syncing shortly after boot refills that directory. It runs on the scheduler
+# rather than at import so a slow or unreachable Notion cannot block startup.
+scheduler.add_job(
+    sync.sync_notion_to_db, "date",
+    run_date=datetime.now() + timedelta(seconds=10), id="notion_sync_boot",
+)
 scheduler.start()
 
 
@@ -206,6 +214,9 @@ def post_page(slug: str, request: Request, db: Session = Depends(database.get_db
         "post":             seo.post_view(post),
         "body":             post.body,
         "related":          related,
+        # Overrides the site-wide avatar so a shared link previews with the
+        # post's own cover. Must be absolute — crawlers do not resolve paths.
+        "og_image":         seo.absolute(post.cover_url) or config.avatar_url(),
     })
 
 
