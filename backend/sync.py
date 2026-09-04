@@ -1,8 +1,10 @@
 import hashlib
+import html as html_module
 import os
 import re
 import urllib.request
 from datetime import date
+from difflib import SequenceMatcher
 from pathlib import Path
 from notion_client import Client
 from sqlalchemy.orm import Session
@@ -47,6 +49,41 @@ def cache_image(url: str, slug: str) -> str:
         return "{}/{}".format(IMAGE_URL_PREFIX, name)
     except Exception:
         return ""
+
+
+_TAG_RE = re.compile(r"<[^>]+>")
+_LEAD_P_RE = re.compile(r"\s*<p>(.*?)</p>\s*", re.S)
+
+
+def _norm(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (text or "").lower())
+
+
+def drop_title_echo(body_html: str, title: str) -> str:
+    """Drop a first paragraph that just repeats the headline.
+
+    Telegram posts open with their own hook line, so a post carries its title
+    twice once the page prints an <h1> above the body. Roughly half the archive
+    does this and half does not, which is exactly the kind of inconsistency
+    that makes a blog look unfinished.
+
+    Deliberately conservative: only a short opening line, and only when it
+    nearly matches the title, so a real first paragraph is never eaten. The
+    fuzzy compare is there because the two drift slightly ("Is my manager
+    actually good?" as the row name, "...actually any good?" in the body).
+    """
+    m = _LEAD_P_RE.match(body_html or "")
+    if not m:
+        return body_html
+    lead = html_module.unescape(_TAG_RE.sub("", m.group(1))).strip()
+    if not lead or len(lead) > 120:
+        return body_html
+    a, b = _norm(lead), _norm(title)
+    if not a or not b:
+        return body_html
+    if a == b or SequenceMatcher(None, a, b).ratio() >= 0.85:
+        return body_html[m.end():]
+    return body_html
 
 
 def cover_from_props(props: dict, slug: str) -> str:
@@ -252,7 +289,7 @@ def sync_notion_to_db() -> dict:
                 publish_date = date.fromisoformat(pd_start["start"][:10])
 
             blocks = notion.blocks.children.list(block_id=page["id"]).get("results", [])
-            body = blocks_to_html(blocks, slug=slug)
+            body = drop_title_echo(blocks_to_html(blocks, slug=slug), title)
             cover_url = cover_from_props(props, slug)
 
             existing = db.query(models.Post).filter(models.Post.slug == slug).first()

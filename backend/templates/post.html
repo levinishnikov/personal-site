@@ -24,6 +24,7 @@
 
       [% if post.cover_url %]
       <figure class="post-cover">
+        <div class="post-cover-fill" style="background-image:url('[[ post.cover_url ]]')"></div>
         <img src="[[ post.cover_url ]]" alt="[[ post.title ]]">
       </figure>
       [% endif %]

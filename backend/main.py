@@ -11,6 +11,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from pathlib import Path
 from typing import List
 from datetime import date, datetime, timedelta
+import hashlib
 import os
 import logging
 import jinja2
@@ -101,6 +102,21 @@ _env.globals.update({
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 templates.env = _env
+
+
+def _asset_version() -> str:
+    """Short hash of the stylesheet, appended to its URL as ?v=.
+
+    Without it a design change ships to the server and nobody sees it: browsers
+    keep serving the stylesheet they already have.
+    """
+    try:
+        return hashlib.sha1((STATIC_DIR / "styles.css").read_bytes()).hexdigest()[:8]
+    except OSError:
+        return "0"
+
+
+_env.globals["asset_v"] = _asset_version()
 
 # ── Scheduler ─────────────────────────────────────────────────────────────────
 

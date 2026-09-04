@@ -1223,16 +1223,49 @@ main {
   margin: 28px 0;
 }
 
+/* Covers come from Telegram in every shape there is — 360x480 phone snaps next
+   to 2048x1360 renders. Cropping them to a common banner decapitates the
+   portraits, so instead every cover gets an identical 3:2 frame and sits inside
+   it whole, over a blurred copy of itself. Landscape shots fill the frame and
+   never show the backdrop; tall ones get soft colour beside them instead of
+   dead grey bars. Same footprint on every post either way. */
 .post-cover {
-  margin: 0 0 20px;
+  position: relative;
+  margin: 0 0 18px;
+  aspect-ratio: 3 / 2;
+  border-radius: 20px;
+  overflow: hidden;
+  isolation: isolate;
+  background: rgba(120, 130, 150, 0.10);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.55) inset,
+    0 16px 48px rgba(0, 0, 0, 0.10);
+  animation: fadeUp 0.7s ease 0.05s both;
+}
+
+.post-cover-fill {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(34px) saturate(150%);
+  transform: scale(1.25);
+  opacity: 0.85;
 }
 
 .post-cover img {
-  width: 100%;
-  max-height: 460px;
-  object-fit: cover;
-  border-radius: 14px;
+  position: relative;
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .post-cover {
+    border-radius: 16px;
+    margin-bottom: 14px;
+  }
 }
 
 .post-body figure {
